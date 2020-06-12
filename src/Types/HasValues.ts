@@ -60,7 +60,5 @@ export function* intersect(set1: Iterable<FixedUInt>, set2: Iterable<FixedUInt>)
 export function* overlap(set1: Iterable<FixedUInt>, set2: Iterable<FixedUInt>): Generator<FixedUInt>
 {
     const seen: Dictionary<FixedUInt> = {};
-
-    
-
+    throw new Error("Not Implemented");
 }

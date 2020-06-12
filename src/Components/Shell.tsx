@@ -1,18 +1,41 @@
 import * as React from "react";
+import { useMemo } from "react";
 import { StoreProvider } from "easy-peasy";
-import { Fabric } from "@fluentui/react";
+import { Fabric, mergeStyleSets, getTheme } from "@fluentui/react";
 
 // store
 import { store } from "../Store";
 
 // components
-import { InstructionList } from "./InstructionList";
+import { BladeList, Blade } from "./BladeList";
+import { ArchitectureBlade } from "./ArchitectureBlade";
 
 export function Shell(): JSX.Element {
 
-    return <Fabric>
+    const theme = getTheme();
+    const style = useMemo(useStyle, [theme]);
+
+    return <Fabric className={style.root}>
         <StoreProvider store={store}>
-            <InstructionList />
+            <BladeList className={style.root}>
+                <ArchitectureBlade />
+            </BladeList>
         </StoreProvider>
-    </Fabric>
+    </Fabric>;
+
+
+    function useStyle() {
+        return mergeStyleSets({
+            root: {
+                position: "fixed",
+                left: 0,
+                top: 0,
+                width: "100vw",
+                height: "100vh",
+                border: 0,
+                padding: 0,
+                backgroundColor: theme.semanticColors.bodyFrameBackground,
+            }
+        });
+    }
 }
