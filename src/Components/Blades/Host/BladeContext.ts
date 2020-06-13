@@ -1,6 +1,7 @@
 import React from "react";
 
 import { BladeProps } from "./Blade";
+import { ICommandBarItemProps } from "@fluentui/react";
 
 export interface BladeContext {
     openBlade?: (afterBladeId: number, bladeType: React.FunctionComponent) => void;
@@ -32,4 +33,8 @@ export function useBlade(): UseBladeResult {
             }
         }
     };
+}
+
+export function useBladeButton(props: ICommandBarItemProps): void {
+    
 }

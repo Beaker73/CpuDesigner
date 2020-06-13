@@ -1,5 +1,5 @@
 import * as React from "react";
-import { DetailsList, IColumn } from "@fluentui/react";
+import { DetailsList, IColumn, ICommandBarItemProps } from "@fluentui/react";
 
 import { Blade } from "./Host";
 
@@ -13,7 +13,11 @@ export function BitsetsListBlade(): JSX.Element {
 
     const items: any[] = [];
 
-    return <Blade size={4} title="Bitsets">
+    const buttons: ICommandBarItemProps[] = [
+        { key: "add", name: "Add...", iconProps: { iconName: "Add" } }, 
+    ];
+
+    return <Blade size={4} title="Bitsets" buttons={buttons}>
         <DetailsList columns={columns} items={items} />
     </Blade>;
 }
