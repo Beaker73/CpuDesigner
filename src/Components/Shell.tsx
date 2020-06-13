@@ -1,5 +1,4 @@
-import * as React from "react";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { StoreProvider } from "easy-peasy";
 import { Fabric, mergeStyleSets, getTheme } from "@fluentui/react";
 
@@ -7,8 +6,8 @@ import { Fabric, mergeStyleSets, getTheme } from "@fluentui/react";
 import { store } from "../Store";
 
 // components
-import { BladeList, Blade } from "./BladeList";
-import { ArchitectureBlade } from "./ArchitectureBlade";
+import { BladeHost } from "./Blades/Host";
+import { ArchitectureBlade } from "./Blades/ArchitectureBlade";
 
 export function Shell(): JSX.Element {
 
@@ -17,9 +16,7 @@ export function Shell(): JSX.Element {
 
     return <Fabric className={style.root}>
         <StoreProvider store={store}>
-            <BladeList className={style.root}>
-                <ArchitectureBlade />
-            </BladeList>
+            <BladeHost className={style.root} root={ArchitectureBlade} />
         </StoreProvider>
     </Fabric>;
 
