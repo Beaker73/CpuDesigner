@@ -6,7 +6,9 @@ import { Blade } from "./Host";
 export function BitsetsListBlade(): JSX.Element {
 
     const columns: IColumn[] = [
-        { key: "name", name: "Name", fieldName: "name", minWidth: 200, isRowHeader: true },
+        { key: "name", name: "Name", fieldName: "name", minWidth: 150, isRowHeader: true },
+        { key: "bits", name: "Bits", fieldName: "bitCount", minWidth: 50 },
+        { key: "values", name: "Values", fieldName: "count", minWidth: 50 },
     ];
 
     const items: any[] = [];

@@ -17,7 +17,7 @@ export function BladeHost(props: BladeHostProps): JSX.Element {
 
     const bladeInstances = blades.map((bladeType, i) => {
         const blade = React.createElement(bladeType);
-        return <bladeContext.Provider value={{ openBlade, bladeId: i }}>
+        return <bladeContext.Provider value={{ openBlade, closeBlade, bladeId: i }}>
             {blade}
         </bladeContext.Provider>
     });
@@ -28,7 +28,11 @@ export function BladeHost(props: BladeHostProps): JSX.Element {
         </BladeList>
     </bladeContext.Provider >;
 
-    function openBlade(afterBlade: number, blade: React.FunctionComponent) {
-        setBlades(b => [...b.slice(0, afterBlade + 1), blade]);
+    function openBlade(afterBladeId: number, blade: React.FunctionComponent) {
+        setBlades(b => [...b.slice(0, afterBladeId + 1), blade]);
+    }
+
+    function closeBlade(bladeId: number) {
+        setBlades(b => b.slice(0, bladeId));
     }
 }

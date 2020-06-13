@@ -28,7 +28,10 @@ export function Blade(props: React.PropsWithChildren<BladeProps>): JSX.Element {
                                 </Text>
                             </Stack.Item>
                             <Stack.Item grow={0}>
-                                <IconButton iconProps={{ iconName: "ChromeClose" }} />
+                                {bladeId === 0 ?
+                                    void 0 :
+                                    <IconButton iconProps={{ iconName: "ChromeClose" }} onClick={closeBlade} />
+                                }
                             </Stack.Item>
                         </Stack>
                     </Stack.Item>
@@ -39,6 +42,12 @@ export function Blade(props: React.PropsWithChildren<BladeProps>): JSX.Element {
             </FocusZone>
         </bladeContext.Provider>
     </div>
+
+    function closeBlade(): void {
+        if (context.closeBlade !== void 0 && context.bladeId !== void 0) {
+            context.closeBlade(context.bladeId);
+        }
+    }
 
     function useStyle() {
         return mergeStyleSets({
