@@ -3,6 +3,7 @@ import { Label, Slider, TextField, Button, Stack, Text, getTheme } from "@fluent
 
 import { Blade, useBlade } from "./Host";
 import { BitsetsListBlade } from "./BitsetsListBlade";
+import { OpcodesListBlade } from "./OpcodesListBlade";
 
 export function ArchitectureBlade(): JSX.Element {
 
@@ -22,14 +23,17 @@ export function ArchitectureBlade(): JSX.Element {
             <Stack.Item>
                 <Stack horizontal tokens={{ childrenGap: theme.spacing.m }}>
                     <Button onClick={openBitsets}>Bitsets...</Button>
-                    <Button>Opcodes...</Button>
+                    <Button onClick={openOpcodes}>Opcodes...</Button>
                 </Stack>
             </Stack.Item>
         </Stack>
     </Blade>;
 
     function openBitsets(): void {
-        debugger;
         openBlade(BitsetsListBlade);
+    }
+
+    function openOpcodes(): void {
+        openBlade(OpcodesListBlade);
     }
 }

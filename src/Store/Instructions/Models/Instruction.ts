@@ -1,9 +1,5 @@
-import { v4 } from "uuid";
 import { HasValues } from "../../../Types/HasValues";
-import { FixedUInt } from "../../../Types/FixedUInt";
-import { InstructionsStoreModel } from "../StoreModel";
-
-export type uuid = string;
+import { uuid, newUuid } from "../../../Types/uuid";
 
 export interface Instruction {
     id: uuid;
@@ -17,7 +13,7 @@ export interface Instruction {
 export function newInstruction(): Instruction {
 
     var instr: Omit<Instruction, "bitCount"> = {
-        id: v4(),
+        id: newUuid(),
         bitSets: [],
         mnemonic: "",
         description: ""

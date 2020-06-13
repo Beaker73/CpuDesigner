@@ -1,12 +1,9 @@
 import * as React from "react";
 import { DetailsList, IColumn, ICommandBarItemProps } from "@fluentui/react";
 
-import { Blade, useBlade } from "./Host";
-import { BitsetBlade } from "./BitsetBlade";
+import { Blade } from "./Host";
 
-export function BitsetsListBlade(): JSX.Element {
-
-    const blade = useBlade();
+export function OpcodesListBlade(): JSX.Element {
 
     const columns: IColumn[] = [
         { key: "name", name: "Name", fieldName: "name", minWidth: 150, isRowHeader: true },
@@ -17,14 +14,14 @@ export function BitsetsListBlade(): JSX.Element {
     const items: any[] = [];
 
     const buttons: ICommandBarItemProps[] = [
-        { key: "add", name: "Add...", iconProps: { iconName: "Add" }, onClick: addBitset },
+        { key: "add", name: "Add...", iconProps: { iconName: "Add" }, onClick: addOpcode }, 
     ];
 
-    return <Blade size={4} title="Bitsets" buttons={buttons}>
+    return <Blade size={4} title="Opcode" buttons={buttons}>
         <DetailsList columns={columns} items={items} />
     </Blade>;
 
-    function addBitset(): void {
-        blade.openBlade(BitsetBlade, { bitsetId: void 0 });
+    function addOpcode(): void {
+        
     }
 }
