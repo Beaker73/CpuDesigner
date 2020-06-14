@@ -17,7 +17,7 @@ export function OpcodesListBlade(): JSX.Element {
         { key: "add", name: "Add...", iconProps: { iconName: "Add" }, onClick: addOpcode }, 
     ];
 
-    return <Blade size={4} title="Opcode" buttons={buttons}>
+    return <Blade title="Opcode" buttons={buttons}>
         <DetailsList columns={columns} items={items} />
     </Blade>;
 

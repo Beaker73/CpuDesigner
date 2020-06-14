@@ -30,7 +30,7 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
 
     const theme = getTheme();
 
-    return <Blade size={4} title="New bitset" buttons={buttons}>
+    return <Blade title="New bitset" buttons={buttons}>
         <Stack tokens={{ childrenGap: theme.spacing.m }}>
             <Field label="Name" subLabel="of the Bitset">
                 {isNewBitset

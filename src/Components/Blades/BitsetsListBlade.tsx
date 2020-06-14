@@ -20,7 +20,7 @@ export function BitsetsListBlade(): JSX.Element {
         { key: "add", name: "Add...", iconProps: { iconName: "Add" }, onClick: addBitset },
     ];
 
-    return <Blade size={4} title="Bitsets" buttons={buttons}>
+    return <Blade title="Bitsets" buttons={buttons}>
         <DetailsList columns={columns} items={items} />
     </Blade>;
 

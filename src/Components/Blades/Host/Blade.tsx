@@ -15,7 +15,6 @@ export function Blade(props: React.PropsWithChildren<BladeProps>): JSX.Element {
     const bladeId = context.bladeId!;
     const theme = getTheme();
     const style = useMemo(useStyle, [theme, bladeId]);
-    const width = (props.size ?? 5) * 100;
 
     const items: ICommandBarItemProps[] = [];
 
@@ -26,8 +25,7 @@ export function Blade(props: React.PropsWithChildren<BladeProps>): JSX.Element {
     if (bladeId > 0)
         farItems.push({ key: "close", iconOnly: true, onClick: closeBlade, iconProps: { iconName: "ChromeClose" } });
 
-    return <div className={style.blade} style={{ width: width, minWidth: width, maxWidth: width }}>
-        <bladeContext.Provider value={{ ...context, bladeProps: props }}>
+    return <bladeContext.Provider value={{ ...context, bladeProps: props }}>
             <FocusZone>
                 <Stack className={style.bladeContainer}>
                     <Stack.Item grow={0}>
@@ -38,8 +36,7 @@ export function Blade(props: React.PropsWithChildren<BladeProps>): JSX.Element {
                     </Stack.Item>
                 </Stack>
             </FocusZone>
-        </bladeContext.Provider>
-    </div>
+        </bladeContext.Provider>;
 
     function renderTitle(): JSX.Element {
         return <Stack verticalAlign="center">
@@ -55,19 +52,7 @@ export function Blade(props: React.PropsWithChildren<BladeProps>): JSX.Element {
 
     function useStyle() {
         return mergeStyleSets({
-            blade: mergeStyles(
-                {
-                    boxSizing: "border-box",
-                    height: "100%",
-                    boxShadow: theme.effects.elevation16,
-                    border: `solid 1px ${theme.semanticColors.bodyFrameDivider}`,
-                    background: theme.semanticColors.bodyBackground,
-                    padding: theme.spacing.m,
-                    zIndex: bladeId * 100,
-                },
-                AnimationStyles.slideLeftIn400,
-                //AnimationStyles.fadeOut400,
-            ),
+            
             bladeContainer: {
                 height: "100%",
             },

@@ -12,7 +12,7 @@ export function ArchitectureBlade(): JSX.Element {
     const { openBlade } = useBlade();
     const theme = getTheme();
 
-    return <Blade size={4} title="Architecture">
+    return <Blade title="Architecture">
         <Stack tokens={{ childrenGap: theme.spacing.m }}>
             <Field label="Instruction Width" subLabel="in bits">
                 <Slider min={1} max={256} defaultValue={8}></Slider>
