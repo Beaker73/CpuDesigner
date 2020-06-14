@@ -5,6 +5,8 @@ import { Blade, useBlade } from "./Host";
 import { BitsetsListBlade } from "./BitsetsListBlade";
 import { OpcodesListBlade } from "./OpcodesListBlade";
 
+import { Field } from "../Field";
+
 export function ArchitectureBlade(): JSX.Element {
 
     const { openBlade } = useBlade();
@@ -12,14 +14,12 @@ export function ArchitectureBlade(): JSX.Element {
 
     return <Blade size={4} title="Architecture">
         <Stack tokens={{ childrenGap: theme.spacing.m }}>
-            <Stack.Item>
-                <Label>Instruction Width <Text variant="small" style={{ opacity: 0.5 }}>in bits</Text></Label>
+            <Field label="Instruction Width" subLabel="in bits">
                 <Slider min={1} max={256} defaultValue={8}></Slider>
-            </Stack.Item>
-            <Stack.Item>
-                <Label>Name <Text variant="small" style={{ opacity: 0.5 }}>of the Architecture</Text></Label>
+            </Field>
+            <Field label="Name" subLabel="of the Architecture">
                 <TextField />
-            </Stack.Item>
+            </Field>
             <Stack.Item>
                 <Stack horizontal tokens={{ childrenGap: theme.spacing.m }}>
                     <Button onClick={openBitsets}>Bitsets...</Button>

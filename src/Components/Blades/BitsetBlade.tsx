@@ -38,10 +38,10 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
                     : <Text>bitSet?.Name</Text>
                 }
             </Field>
-            <Field label="Size" subLabel=" in bits, of the Bitset">
+            <Field label="Size" subLabel="in bits, of the Bitset">
                 <Slider min={1} max={16} defaultValue={8}></Slider>
             </Field>
-            <Field label="Items" subLabel=" in the bitset" buttons={[
+            <Field label="Items" subLabel="in the bitset" buttons={[
                     { key: 'add', click: addItem, iconOnly: true, iconProps: { iconName: "Add" } },
                     { key: 'remove', iconOnly: true, iconProps: { iconName: "Remove" } },
                 ]}>

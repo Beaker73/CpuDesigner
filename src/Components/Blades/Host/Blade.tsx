@@ -25,7 +25,6 @@ export function Blade(props: React.PropsWithChildren<BladeProps>): JSX.Element {
     const farItems: ICommandBarItemProps[] = props.buttons ? [...props?.buttons] : [];
     if (bladeId > 0)
         farItems.push({ key: "close", iconOnly: true, onClick: closeBlade, iconProps: { iconName: "ChromeClose" } });
-    console.log({ buttons: props?.buttons, farItems });
 
     return <div className={style.blade} style={{ width: width, minWidth: width, maxWidth: width }}>
         <bladeContext.Provider value={{ ...context, bladeProps: props }}>
