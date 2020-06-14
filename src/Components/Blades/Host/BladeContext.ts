@@ -14,27 +14,33 @@ export const bladeContext = React.createContext<BladeContext>({});
 
 export type UseBladeResult = {
     openBlade<P>(bladeType: React.FunctionComponent<P>, props?: P): void;
+    replaceBlade<P>(bladeType: React.FunctionComponent<P>, props?: P): void;
     closeBlade: () => void;
 }
 
 export function useBlade(): UseBladeResult {
 
     const context = React.useContext(bladeContext);
-    
+
     return {
         openBlade: (bladeType, props) => {
             if (context.openBlade !== void 0 && context.bladeId !== void 0) {
                 context.openBlade(context.bladeId, bladeType, props);
             }
         },
+        replaceBlade: (bladeType, props) => {
+            if (context.openBlade !== void 0 && context.bladeId !== void 0) {
+                context.openBlade(context.bladeId - 1, bladeType, props);
+            }
+        },
         closeBlade: () => {
             if (context.closeBlade !== void 0 && context.bladeId !== void 0) {
                 context.closeBlade(context.bladeId);
             }
-        }
+        },
     };
 }
 
 export function useBladeButton(props: ICommandBarItemProps): void {
-    
+
 }

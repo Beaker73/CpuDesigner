@@ -2,7 +2,7 @@ import * as React from "react";
 import { DetailsList, IColumn, ICommandBarItemProps } from "@fluentui/react";
 
 import { Blade, useBlade } from "./Host";
-import { BitsetBlade } from "./BitsetBlade";
+import { BitsetCreateBlade } from "./BitsetCreateBlade";
 
 export function BitsetsListBlade(): JSX.Element {
 
@@ -25,6 +25,6 @@ export function BitsetsListBlade(): JSX.Element {
     </Blade>;
 
     function addBitset(): void {
-        blade.openBlade(BitsetBlade, { bitsetId: void 0 });
+        blade.openBlade(BitsetCreateBlade, { bitsetId: void 0 });
     }
 }
