@@ -1,11 +1,16 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, PropsWithChildren } from "react";
 
 import { bladeContext } from "./BladeContext";
 import { BladeList } from "./BladeList";
 
 export interface BladeHostProps extends React.HTMLAttributes<HTMLDivElement> {
-    root: React.FunctionComponent;
+    root: DefineBladeProps;
 }
+
+export interface DefineBladeProps {
+    bladeType: React.FunctionComponent,
+    bladeProps: {}
+};
 
 /**
  * Blade host provides the context for the blades
@@ -13,13 +18,14 @@ export interface BladeHostProps extends React.HTMLAttributes<HTMLDivElement> {
  */
 export function BladeHost(props: BladeHostProps): JSX.Element {
 
-    const [blades, setBlades] = useState<React.FunctionComponent[]>([props.root]);
+    const [blades, setBlades] = useState<DefineBladeProps[]>([props.root]);
 
-    const bladeInstances = blades.map((bladeType, i) => {
-        const blade = React.createElement(bladeType);
+    const bladeInstances = blades.map((blade, i) => {
+        const BladeType = blade.bladeType;
         return <bladeContext.Provider value={{ openBlade, closeBlade, bladeId: i }}>
-            {blade}
+            <BladeType key={blade.bladeType.name + ":" + JSON.stringify(blade.bladeProps)} {...blade.bladeProps} />
         </bladeContext.Provider>
+
     });
 
     return <bladeContext.Provider value={{ openBlade }}>
@@ -28,7 +34,7 @@ export function BladeHost(props: BladeHostProps): JSX.Element {
         </BladeList>
     </bladeContext.Provider >;
 
-    function openBlade(afterBladeId: number, blade: React.FunctionComponent) {
+    function openBlade(afterBladeId: number, blade: DefineBladeProps) {
         setBlades(b => [...b.slice(0, afterBladeId + 1), blade]);
     }
 

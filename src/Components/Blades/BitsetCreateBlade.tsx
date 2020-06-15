@@ -13,7 +13,7 @@ export interface BitsetCreateBladeProps {
 
 export function BitsetCreateBlade(props: BitsetCreateBladeProps): JSX.Element {
 
-    const getBitsByName = useStoreState(store => store.bitsets.getBitsByName);
+    const getBitsetByName = useStoreState(store => store.bitsets.getBitsetByName);
     const newBitset = useStoreActions(store => store.bitsets.newBitset);
     const blade = useBlade();
 
@@ -40,13 +40,13 @@ export function BitsetCreateBlade(props: BitsetCreateBladeProps): JSX.Element {
 
     function updateName(e: React.FormEvent, newName?: string): void {
         setName(newName ?? "");
-        setCanSave(typeof newName === "string" && newName.length > 1 && !getBitsByName(newName));
+        setCanSave(typeof newName === "string" && newName.length > 1 && !getBitsetByName(newName));
     }
 
     function createBitset(): void {
         if (canSave) {
             const id = newUuid();
-            newBitset({ id, bitCount: BigInt(bitCount), name });
+            newBitset({ id, bitCount, name });
             blade.replaceBlade(BitsetEditBlade, { bitsetId: id })
         }
     }

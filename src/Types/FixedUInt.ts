@@ -81,6 +81,13 @@ export class FixedUInt implements HasValues {
         return this.value === other.value;
     }
 
+    public toJSON(): any {
+        return {
+            bitCount: this.bitCount.toString(),
+            value: this.value.toString(),
+        };
+    }
+
     /**
      * Check if the MSB's of the longest value all match with the full value of the shortest
      * @param other The value to compare against.

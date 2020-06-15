@@ -16,7 +16,7 @@ export function Shell(): JSX.Element {
 
     return <Fabric className={style.root}>
         <StoreProvider store={store}>
-            <BladeHost className={style.root} root={ArchitectureBlade} />
+            <BladeHost className={style.root} root={{bladeType: ArchitectureBlade, bladeProps: {}}} />
         </StoreProvider>
     </Fabric>;
 

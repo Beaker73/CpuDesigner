@@ -77,6 +77,24 @@ export class FixedUIntSet<T = void>
         return this.items();
     }
 
+    public toJSON(): any {
+
+        const json: any = {
+            bitCount: this.bitCount.toString(),
+            taggedValues: {},
+            values: [],
+        };
+
+        for( const item of this.items() ) {
+            if(isTagged(item))
+                json.taggedValues[item[0].toString()] = item[1];
+            else if(isValue(item))
+                json.values.push(item.toString());
+        }
+
+        return json;
+    }
+
     /** Iterator on the values in the set */
     *values(): Generator<FixedUInt> {
         for (const item of this.items()) {

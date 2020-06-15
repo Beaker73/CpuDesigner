@@ -2,6 +2,7 @@ import React, { useContext, useMemo } from "react";
 import { FocusZone, Stack, Text, getTheme, mergeStyleSets, mergeStyles, AnimationStyles, CommandBar, ICommandBarProps, ICommandBarItemProps, ContextualMenuItemType } from "@fluentui/react";
 
 import { bladeContext } from "./BladeContext";
+import { ErrorBoundary } from "../../ErrorBoundary";
 
 export interface BladeProps {
     size?: number;
@@ -26,17 +27,19 @@ export function Blade(props: React.PropsWithChildren<BladeProps>): JSX.Element {
         farItems.push({ key: "close", iconOnly: true, onClick: closeBlade, iconProps: { iconName: "ChromeClose" } });
 
     return <bladeContext.Provider value={{ ...context, bladeProps: props }}>
-            <FocusZone>
-                <Stack className={style.bladeContainer}>
-                    <Stack.Item grow={0}>
-                        <CommandBar styles={{ root: { padding: 0 } }} items={items} farItems={farItems} />
-                    </Stack.Item>
-                    <Stack.Item grow={1}>
+        <FocusZone>
+            <Stack className={style.bladeContainer}>
+                <Stack.Item grow={0}>
+                    <CommandBar styles={{ root: { padding: 0 } }} items={items} farItems={farItems} />
+                </Stack.Item>
+                <Stack.Item grow={1}>
+                    <ErrorBoundary>
                         {props.children}
-                    </Stack.Item>
-                </Stack>
-            </FocusZone>
-        </bladeContext.Provider>;
+                    </ErrorBoundary>
+                </Stack.Item>
+            </Stack>
+        </FocusZone>
+    </bladeContext.Provider>;
 
     function renderTitle(): JSX.Element {
         return <Stack verticalAlign="center">
@@ -52,7 +55,7 @@ export function Blade(props: React.PropsWithChildren<BladeProps>): JSX.Element {
 
     function useStyle() {
         return mergeStyleSets({
-            
+
             bladeContainer: {
                 height: "100%",
             },

@@ -1,4 +1,4 @@
-import { createStore, createTypedHooks } from "easy-peasy";
+import { createStore, createTypedHooks, createTransform } from "easy-peasy";
 
 import { configurationStore } from "./Configuration";
 import { bitsetsStore } from "./Bitsets";

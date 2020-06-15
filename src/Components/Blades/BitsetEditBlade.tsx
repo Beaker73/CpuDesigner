@@ -13,7 +13,9 @@ export interface BitsetEditBladeProps {
 
 export function BitsetEditBlade(props: BitsetEditBladeProps): JSX.Element {
 
-    const bitSet = useStoreState(store => store.bitsets.getBitsById(props.bitsetId));
+    const bitSet = useStoreState(store => store.bitsets.getBitsetById(props.bitsetId));
+    if (!bitSet)
+        throw new Error(`Bitset ${props.bitsetId} missing`);
     const blade = useBlade();
 
     const buttons: ICommandBarItemProps[] = [
