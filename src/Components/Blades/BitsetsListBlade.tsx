@@ -3,10 +3,15 @@ import { DetailsList, IColumn, ICommandBarItemProps } from "@fluentui/react";
 
 import { Blade, useBlade } from "./Host";
 import { BitsetCreateBlade } from "./BitsetCreateBlade";
+import { useStoreActions, useStoreState } from "../../Store";
+import { newUuid } from "../../Types/uuid";
+import { Bitset } from "../../Store/Bitsets/Models/Bitset";
 
 export function BitsetsListBlade(): JSX.Element {
 
     const blade = useBlade();
+    const newBitset = useStoreActions(store => store.bitsets.newBitset)
+    const bitSets = useStoreState(store => store.bitsets.bitSetsById);
 
     const columns: IColumn[] = [
         { key: "name", name: "Name", fieldName: "name", minWidth: 150, isRowHeader: true },
@@ -14,7 +19,7 @@ export function BitsetsListBlade(): JSX.Element {
         { key: "values", name: "Values", fieldName: "count", minWidth: 50 },
     ];
 
-    const items: any[] = [];
+    const items: Bitset[] = Object.values(bitSets);
 
     const buttons: ICommandBarItemProps[] = [
         { key: "add", name: "Add...", iconProps: { iconName: "Add" }, onClick: addBitset },
@@ -25,6 +30,8 @@ export function BitsetsListBlade(): JSX.Element {
     </Blade>;
 
     function addBitset(): void {
-        blade.openBlade(BitsetCreateBlade, { bitsetId: void 0 });
+        const id = newUuid();
+        newBitset({ id });
+        blade.openBlade(BitsetCreateBlade, { id });
     }
 }

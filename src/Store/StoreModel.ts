@@ -1,10 +1,10 @@
-import { ConfigurationStoreModel } from "./Configuration";
+import { ArchitectureStoreModel } from "./Architecture";
 import { InstructionsStoreModel } from "./Instructions";
 import { BitsetsStoreModel } from "./Bitsets";
 
 export interface StoreModel 
 {
-    configuration: ConfigurationStoreModel;
+    architecture: ArchitectureStoreModel;
     bitsets: BitsetsStoreModel;
     instructions: InstructionsStoreModel;
 }

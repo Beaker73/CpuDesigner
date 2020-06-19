@@ -7,7 +7,7 @@ export interface Instruction {
     mnemonic: string;
     description: string;
 
-    readonly bitCount: bigint,
+    readonly bitCount: number,
 }
 
 export function newInstruction(): Instruction {
@@ -21,7 +21,7 @@ export function newInstruction(): Instruction {
 
     Object.defineProperty(instr, "bitCount", {
         get: function() {
-            return instr.bitSets.reduce((b, s) => b + s.bitCount, 0n);
+            return instr.bitSets.reduce((b, s) => b + s.bitCount, 0);
         }
     });
 

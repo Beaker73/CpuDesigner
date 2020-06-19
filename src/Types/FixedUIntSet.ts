@@ -1,124 +1,165 @@
-import { FixedUInt } from "./FixedUInt";
-import { Dictionary } from "./Dictionary";
+import { FixedUInt, maxValueForBitCount } from "./FixedUInt";
+import { Dictionary } from "../Types/Dictionary";
 
+export class FixedUIntMap<T> {
+    private readonly _bitCount: number;
+    private readonly _map: Map<bigint, T> = new Map<bigint, T>();
 
-type Item<T = void> = T extends void ? FixedUInt : [FixedUInt, T];
-type InputItem<T = void> = T extends void ? (FixedUInt | bigint) : [(FixedUInt | bigint), T];
+    /**
+     * Construct a map for fixed size values 
+     * @param bitCount The number of bits of the values in the map
+     */
+    constructor(bitCount: number, items?: Iterable<[bigint, T]>) {
+        if (bitCount < 1 || bitCount > FixedUInt.maxBitCount)
+            throw new Error(`bitCount out of range (1-${FixedUInt.maxBitCount})`);
+        this._bitCount = bitCount;
+
+        if (items) {
+            const maxValue = maxValueForBitCount(bitCount);
+            for (const item of items) {
+                if (item[0] > maxValue)
+                    throw new Error(`value (${item}) out of range (${maxValue})`);
+                this._map.set(item[0], item[1]);
+            }
+        }
+    }
+
+    /** Add the value to the map */
+    public add(value: FixedUInt | bigint, tag: T) {
+        if (value instanceof FixedUInt) {
+            if (value.bitCount > this._bitCount)
+                throw new Error(`bitCount $(value.bitCount) of value out of range ($this._bitCount)`);
+            value = value.value;
+        }
+        const maxValue = maxValueForBitCount(this._bitCount);
+        if (value > maxValue)
+            throw new Error(`value (${value}) out of range (${maxValue})`);
+        this.add(value, tag);
+    }
+
+    /** Gets the value at the specified index */
+    public get(index: bigint | FixedUInt): [FixedUInt, T] | undefined {
+        if (index instanceof FixedUInt) {
+            if (index.bitCount > this._bitCount)
+                throw new Error(`bitCount $(index.bitCount) of index out of range ($this._bitCount)`);
+            index = index.value;
+        }
+        const maxValue = maxValueForBitCount(this._bitCount);
+        if (index > maxValue)
+            throw new Error(`index (${index}) out of range (${maxValue})`);
+        const tag = this._map.get(index)
+        if (tag)
+            return [new FixedUInt(this._bitCount, index), tag];
+        return void 0;
+    }
+
+    /** Number of bits of the numbers in the set */
+    public get bitCount(): number { return this._bitCount; }
+    /** Count of numbers in the set */
+    public get size(): number { return this._map.size; }
+
+    *[Symbol.iterator](): Generator<FixedUInt> {
+        return this.values();
+    }
+
+    /** Iterator on the value and their tags */
+    *items(): Generator<[FixedUInt, T]> {
+        const bitCount = this._bitCount;
+        for (const item of this._map) {
+            yield [new FixedUInt(bitCount, item[0]), item[1]];
+        }
+    }
+
+    /** Iterator on the values in the set */
+    *values(): Generator<FixedUInt> {
+        const bitCount = this._bitCount;
+        for (const item of this._map.keys()) {
+            yield new FixedUInt(bitCount, item);
+        }
+    }
+
+    /** Iterator on the naked values in the set */
+    *nakedValues(): Generator<bigint> {
+        for (const item of this._map.keys()) {
+            yield item;
+        }
+    }
+
+    public static parseDictionary<T>(bitCount: number, dict: Dictionary<T>): FixedUIntMap<T> {
+        return new FixedUIntMap<T>(
+            bitCount,
+            Object.entries(dict).map(([k, v]) => [BigInt(k), v]));
+    }
+}
 
 /**
- * A sparse set of FixedUInt's, optionaly tagged with extra data
+ * A set of FixedUInt's
  */
-export class FixedUIntSet<T = void>
-{
-    private _count: bigint = 0n;
-    private set: Dictionary<Item<T>> = {};
+export class FixedUIntSet {
+    private readonly _bitCount: number;
+    private readonly _set: Set<bigint> = new Set<bigint>();
 
     /**
      * Construct a set for fixed size values 
      * @param bitCount The number of bits of the values in the set
      */
-    constructor(bitCount: bigint, items?: Iterable<InputItem<T>>) {
+    constructor(bitCount: number, items?: Iterable<bigint>) {
         if (bitCount < 1 || bitCount > FixedUInt.maxBitCount)
             throw new Error(`bitCount out of range (1-${FixedUInt.maxBitCount})`);
-        this.bitCount = bitCount;
+        this._bitCount = bitCount;
 
         if (items) {
+            const maxValue = maxValueForBitCount(bitCount);
             for (const item of items) {
-                if (isTagged(item) && typeof item[0] === "bigint")
-                    this.addVal(item[0], item[1]);
-                else if (isValue(item) && typeof item === "bigint")
-                    this.addVal(item as bigint, void 0 as unknown as T);
-                else
-                    this.add(item as Item<T>);
+                if (item > maxValue)
+                    throw new Error(`value (${item}) out of range (${maxValue})`);
+                this._set.add(item);
             }
         }
     }
 
     /** Add the value to the set */
-    public addVal(value: bigint, tag: T) {
-        const fixed = new FixedUInt(this.bitCount, value);
-        if (tag)
-            this.add([fixed, tag] as Item<T>);
-        else
-            this.add(fixed as Item<T>);
+    public add(value: FixedUInt | bigint) {
+        if (value instanceof FixedUInt) {
+            if (value.bitCount > this._bitCount)
+                throw new Error(`bitCount $(value.bitCount) of value out of range ($this._bitCount)`);
+            value = value.value;
+        }
+        const maxValue = maxValueForBitCount(this._bitCount);
+        if (value > maxValue)
+            throw new Error(`value (${value}) out of range (${maxValue})`);
+        this.add(value);
     }
 
     /** Gets the value at the specified index */
-    public get(index: bigint): Item<T> | undefined {
-        const key = index.toString();
-        return this.set[key];
-    }
-
-    /** Add the item to the set */
-    public add(value: Item<T>) {
-        if (isTagged(value)) {
-            if (value[0].bitCount !== this.bitCount)
-                throw new Error(`The bit count of ${value} does not match expected ${this.bitCount}`);
-            const key = value[0].value.toString();
-            if (!(key in this.set))
-                this._count++;
-            this.set[key] = value;
-        } else if (isValue(value)) {
-            if (value.bitCount != this.bitCount)
-                throw new Error(`The bit count of ${value} does not match expected ${this.bitCount}`);
-            const key = value.value.toString();
-            if (!(key in this.set))
-                this._count++;
-            this.set[key] = value;
-        }
+    public get(index: bigint): FixedUInt | undefined {
+        const tag = this._set.has(index)
+        if (tag)
+            return new FixedUInt(this._bitCount, index);
+        return void 0;
     }
 
     /** Number of bits of the numbers in the set */
-    public readonly bitCount: bigint;
+    public get bitCount(): number { return this._bitCount; }
     /** Count of numbers in the set */
-    public get count(): bigint { return this._count; }
+    public get size(): number { return this._set.size; }
 
-    *[Symbol.iterator](): Generator<Item<T>> {
-        return this.items();
-    }
-
-    public toJSON(): any {
-
-        const json: any = {
-            bitCount: this.bitCount.toString(),
-            taggedValues: {},
-            values: [],
-        };
-
-        for( const item of this.items() ) {
-            if(isTagged(item))
-                json.taggedValues[item[0].toString()] = item[1];
-            else if(isValue(item))
-                json.values.push(item.toString());
-        }
-
-        return json;
+    *[Symbol.iterator](): Generator<FixedUInt> {
+        return this.values();
     }
 
     /** Iterator on the values in the set */
     *values(): Generator<FixedUInt> {
-        for (const item of this.items()) {
-            if (isTagged(item))
-                yield item[0];
-            else if (isValue(item))
-                yield item;
+        const bitCount = this._bitCount;
+        for (const item of this._set) {
+            yield new FixedUInt(bitCount, item);
         }
     }
 
-    /** Iterator on the items in the set */
-    *items(): Generator<Item<T>> {
-        for (const key in this.set)
-            yield this.set[key];
+    /** Iterator on the naked values in the set */
+    *nakedValues(): Generator<bigint> {
+        for (const value of this._set)
+            yield value;
     }
-}
-
-/** Test if the item is a tagged value */
-function isTagged<T, I extends FixedUInt | bigint>(value: I | [I, T]): value is [I, T] {
-    return Array.isArray(value) && value.length == 2;
-}
-
-/** Test if the item is a pure value */
-function isValue<T, I extends FixedUInt | bigint>(value: I | [I, T]): value is I {
-    return !Array.isArray(value) && (value instanceof FixedUInt || typeof value === "bigint");
 }
 

@@ -6,10 +6,10 @@ import { HasValues } from "./HasValues";
 export class FixedUInt implements HasValues {
 
     /** The maximum of bits handled by FixedUInt */
-    public static maxBitCount: bigint = 16364n;
+    public static maxBitCount: number = 16364;
 
     /** The number of bits in the fixed size unsigned integer */
-    public readonly bitCount: bigint;
+    public readonly bitCount: number;
     /** The value of the fixed size unsigned integer */
     public readonly value: bigint;
 
@@ -18,11 +18,11 @@ export class FixedUInt implements HasValues {
      * @param bitCount The number of bits the integer is long
      * @param value The value of the fixed size integer
      */
-    constructor(bitCount: bigint, value: bigint) {
+    constructor(bitCount: number, value: bigint) {
         if (bitCount < 1 || bitCount > FixedUInt.maxBitCount)
             throw new Error(`number of bits (${bitCount}) out of range (1-${FixedUInt.maxBitCount})`);
 
-        this.bitCount = bitCount;
+        this.bitCount = bitCount | 0;
         this.value = value;
 
         if (this.value < 0 || this.value > this.maxValue)
@@ -30,18 +30,18 @@ export class FixedUInt implements HasValues {
     }
 
     /** The maximum value based on the number of bits */
-    public get maxValue(): bigint {
-        return (1n << this.bitCount) - 1n;
+    public get maxValue(): number {
+        return (1 << this.bitCount) - 1;
     }
 
     /**
      * Get value of specific bit
      * @param index The index of the bit to get (where 0 is lsb)
      */
-    public getBit(index: bigint): boolean {
+    public getBit(index: number): boolean {
         if (index < 0 || index >= this.bitCount)
-            throw new Error(`index (${index}) out of range (0-${this.bitCount - 1n})`);
-        return (this.value & (1n << index)) !== 0n;
+            throw new Error(`index (${index}) out of range (0-${this.bitCount - 1})`);
+        return (this.value & (1n << BigInt(index))) !== 0n;
     }
 
     /**
@@ -52,7 +52,7 @@ export class FixedUInt implements HasValues {
     public concat(other: FixedUInt): FixedUInt {
         return new FixedUInt(
             this.bitCount + other.bitCount,
-            (this.value << other.bitCount) | other.value
+            (this.value << BigInt(other.bitCount)) | other.value
         );
     }
 
@@ -64,7 +64,7 @@ export class FixedUInt implements HasValues {
     /** Output the fixed integer */
     public toString(): string {
         let bitString = this.value.toString(2);
-        const missing = Number(this.bitCount - BigInt(bitString.length));
+        const missing = Number(this.bitCount - bitString.length);
         bitString = "0".repeat(missing) + bitString;
         return `${this.bitCount}'b${bitString}`;
     }
@@ -96,12 +96,15 @@ export class FixedUInt implements HasValues {
         const [long, short] = this.bitCount > other.bitCount ? [this, other] : [other, this];
 
         // take msb part of longest. Then compare if both equal.
-        const shiftCount = long.bitCount - short.bitCount;
+        const shiftCount = BigInt(long.bitCount - short.bitCount);
         const longMsbValue = long.value >> shiftCount;
 
         return longMsbValue === short.value;
     }
 
+    public static parse(bitCount: number, value: string): FixedUInt {
+        return new FixedUInt(bitCount, BigInt(value));
+    }
 }
 
 /**
@@ -109,7 +112,15 @@ export class FixedUInt implements HasValues {
  * @param bitCount the bit count for the generated fixed size integers
  * @param values the dequence of values to convert
  */
-export function* toFixedUInt(bitCount: bigint, values: Iterable<bigint>): Generator<FixedUInt> {
+export function* toFixedUInt(bitCount: number, values: Iterable<bigint>): Generator<FixedUInt> {
     for (const v of values)
         yield new FixedUInt(bitCount, v);
+}
+
+/**
+ * Gets the maximum value for the number of bits
+ * @param bitCount The number of bits
+ */
+export function maxValueForBitCount(bitCount: number): bigint {
+    return (1n << BigInt(bitCount)) - 1n;
 }

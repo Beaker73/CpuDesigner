@@ -15,11 +15,11 @@ export interface InstructionEditorProps {
 
 export function InstructionEditor(props: InstructionEditorProps): JSX.Element {
 
-    const bitCount = useStoreState(store => store.configuration.bits);
+    const bitCount = useStoreState(store => store.architecture.bitCount);
 
     const bits: JSX.Element[] = [];
-    for (let i = bitCount; i >= 0; i--)
-        bits.push(<BitEditor key={i}></BitEditor>);
+    // for (let i = bitCount; i >= 0; i--)
+    //     bits.push(<BitEditor key={i} value={}></BitEditor>);
 
     return <Stack horizontal>
         {bits}

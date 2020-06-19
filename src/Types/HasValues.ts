@@ -6,7 +6,7 @@ import { Dictionary } from "./Dictionary";
  */
 export interface HasValues {
     /** The number of bits in the values */
-    bitCount: bigint;
+    bitCount: number;
     /** All values in the bit set */
     values(): Iterable<FixedUInt>;
 }
