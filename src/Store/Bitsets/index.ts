@@ -1,15 +1,24 @@
 import { BitsetsStoreModel } from "./StoreModel";
 import { action, computed, thunk } from "easy-peasy";
 import { Bitset } from "./Models/Bitset";
-import { Dictionary } from "../../Types";
-import { maxValueForBitCount } from "../../Types/FixedUInt";
 
 export * from "./StoreModel";
 
 export const bitsetsStore: BitsetsStoreModel = {
     bitSetsById: {},
     getBitsetById: computed(state => id => state.bitSetsById[id]),
-    getBitsetByName: computed(state => name => Object.values(state.bitSetsById).find(bs => bs.name === name)),
+
+    setBitCount: action((state, payload) => {
+        const bitSet = state.bitSetsById[payload.id];
+        if(bitSet)
+            bitSet.bitCount = payload.bitCount;
+    }),
+    setName: action((state, payload) => {
+        const bitSet = state.bitSetsById[payload.id];
+        if(bitSet)
+            bitSet.name = payload.name;
+    }),
+
     addBitset: action((state, payload) => {
         state.bitSetsById[payload.id] = payload;
     }),

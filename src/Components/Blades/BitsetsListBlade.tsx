@@ -1,8 +1,8 @@
 import * as React from "react";
-import { DetailsList, IColumn, ICommandBarItemProps } from "@fluentui/react";
+import { DetailsList, IColumn, ICommandBarItemProps, SelectionMode } from "@fluentui/react";
 
 import { Blade, useBlade } from "./Host";
-import { BitsetCreateBlade } from "./BitsetCreateBlade";
+import { BitsetBlade } from "./BitsetBlade";
 import { useStoreActions, useStoreState } from "../../Store";
 import { newUuid } from "../../Types/uuid";
 import { Bitset } from "../../Store/Bitsets/Models/Bitset";
@@ -26,12 +26,16 @@ export function BitsetsListBlade(): JSX.Element {
     ];
 
     return <Blade title="Bitsets" buttons={buttons}>
-        <DetailsList columns={columns} items={items} />
+        <DetailsList columns={columns} items={items} selectionMode={SelectionMode.none} onItemInvoked={editItem} />
     </Blade>;
+
+    function editItem(item: Bitset): void {
+        blade.openBlade(BitsetBlade, { id: item.id });
+    }
 
     function addBitset(): void {
         const id = newUuid();
         newBitset({ id });
-        blade.openBlade(BitsetCreateBlade, { id });
+        blade.openBlade(BitsetBlade, { id });
     }
 }

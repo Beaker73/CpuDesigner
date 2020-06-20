@@ -7,28 +7,34 @@ import { Field } from "../Field";
 
 import { useStoreState, useStoreActions } from "../../Store";
 
-export interface BitsetCreateBladeProps {
+export interface BitsetBladeProps {
     id: uuid;
 }
 
-export function BitsetCreateBlade(props: BitsetCreateBladeProps): JSX.Element {
+export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
 
     const theme = getTheme();
+    const bitSet = useStoreState(store => store.bitsets.bitSetsById[props.id]);
+    const { setName, setBitCount } = useStoreActions(store => store.bitsets);
 
     return <Blade title="New bitset">
         <Stack tokens={{ childrenGap: theme.spacing.m }}>
             <Field label="Name" subLabel="of the Bitset">
-                <TextField required onChange={updateName} />
+                <TextField required value={bitSet?.name} onChange={onNameChanged} />
             </Field>
             <Field label="Size" subLabel="in bits, of the Bitset">
-                <Slider min={1} max={16} defaultValue={3} onChange={updateBitCount} />
+                <Slider min={1} max={16} value={bitSet?.bitCount} onChange={onBitCountChanged} />
             </Field>
         </Stack>
     </Blade>;
 
-    function updateName(e: React.FormEvent, newName?: string): void {
+    function onNameChanged(e: React.FormEvent, name?: string) {
+        setName({ id: props.id, name: name ?? "" });
+    }
+    function onBitCountChanged(bitCount: number) {
+        setBitCount({ id: props.id, bitCount });
     }
 
-    function updateBitCount(bitCount: number) {
-    }
+
+
 }

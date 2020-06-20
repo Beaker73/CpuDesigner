@@ -8,13 +8,15 @@ import { StoreModel } from "..";
 type NewBitsetPayload = { id: uuid }
 
 export interface BitsetsStoreModel {
-    /** Dicitonary of all the stored bitsets */
+    /** Dictionary of all the stored bitsets */
     bitSetsById: Dictionary<Bitset>;
-    
+    /** Set name on bitset */
+    setName: Action<BitsetsStoreModel, { id: uuid, name: string }>;
+    /** Set bitcount on bitset */
+    setBitCount: Action<BitsetsStoreModel, { id: uuid, bitCount: number }>;
+
     /** Gets the bitset with the provided id */
     getBitsetById: Computed<BitsetsStoreModel, (id: uuid) => Bitset | undefined>;
-    /** Gets the bitset with the provided name */
-    getBitsetByName: Computed<BitsetsStoreModel, (name: string) => Bitset | undefined>;
     /** Adds a the bitset */
     addBitset: Action<BitsetsStoreModel, Bitset>;
     /** Creates a new bitset */
