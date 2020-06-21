@@ -6,6 +6,7 @@ import { BitsetBlade } from "./BitsetBlade";
 import { useStoreActions, useStoreState } from "../../Store";
 import { newUuid } from "../../Types/uuid";
 import { Bitset } from "../../Store/Bitsets/Models/Bitset";
+import { maxValueForBitCount } from "../../Types/FixedUInt";
 
 export function BitsetsListBlade(): JSX.Element {
 
@@ -16,7 +17,7 @@ export function BitsetsListBlade(): JSX.Element {
     const columns: IColumn[] = [
         { key: "name", name: "Name", fieldName: "name", minWidth: 150, isRowHeader: true },
         { key: "bits", name: "Bits", fieldName: "bitCount", minWidth: 50 },
-        { key: "values", name: "Values", fieldName: "count", minWidth: 50 },
+        { key: "values", name: "Values", minWidth: 50, onRender: countValues },
     ];
 
     const items: Bitset[] = Object.values(bitSets);
@@ -26,7 +27,7 @@ export function BitsetsListBlade(): JSX.Element {
     ];
 
     return <Blade title="Bitsets" buttons={buttons}>
-        <DetailsList columns={columns} items={items} selectionMode={SelectionMode.none} onItemInvoked={editItem} />
+        <DetailsList columns={columns} items={items} selectionMode={SelectionMode.none} onActiveItemChanged={editItem} />
     </Blade>;
 
     function editItem(item: Bitset): void {
@@ -37,5 +38,14 @@ export function BitsetsListBlade(): JSX.Element {
         const id = newUuid();
         newBitset({ id });
         blade.openBlade(BitsetBlade, { id });
+    }
+
+    function countValues(item: Bitset) {
+        const maxSize = maxValueForBitCount(item.bitCount) + 1n;
+        if (!item.values)
+            return "-/" + maxSize;
+        console.log({ values: item.values, size: item.values.size });
+        return item.values.size + "/" + maxSize;
+
     }
 }

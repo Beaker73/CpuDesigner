@@ -1,5 +1,5 @@
 import React from "react";
-import { ICommandBarItemProps } from "@fluentui/react";
+import { ICommandBarItemProps, IBaseButtonProps } from "@fluentui/react";
 
 import { BladeProps } from "./Blade";
 import { DefineBladeProps } from "./BladeHost";
@@ -12,11 +12,12 @@ export interface BladeContext {
 }
 
 export const bladeContext = React.createContext<BladeContext>({});
-  
+
 export type UseBladeResult = {
     openBlade<P extends {} = {}>(bladeType: React.FunctionComponent<P>, props?: P): void;
     replaceBlade<P extends {} = {}>(bladeType: React.FunctionComponent<P>, props?: P): void;
-    closeBlade: () => void;
+    closeBlade(): void;
+    showDialog(title: string, message: string, buttons: ReadonlyArray<IBaseButtonProps>): void;
 }
 
 export function useBlade(): UseBladeResult {
@@ -40,6 +41,8 @@ export function useBlade(): UseBladeResult {
                 context.closeBlade(context.bladeId);
             }
         },
+        showDialog: (title: string, message: string, buttons: ReadonlyArray<IBaseButtonProps>) => {
+        }
     };
 }
 
