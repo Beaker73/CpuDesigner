@@ -35,7 +35,9 @@ export function deserializeBitsetsState(state: BitsetsStoreState): BitsetsStoreS
             .entries(state.bitSetsById)
             .map(([k,v]) => ([k, ({
                 ...v,
-                values: !v.values ? null : FixedUIntMap.parseDictionary(v.bitCount, v.values as unknown as Dictionary<string>)
+                values: !v.values 
+                    ? null 
+                    : FixedUIntMap.parseDictionary(v.values.bitCount, v.values.values as unknown as Dictionary<string>)
             })]))),
     }
 }

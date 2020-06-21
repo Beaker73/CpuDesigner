@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { uuid } from "../../Types/uuid";
-import { Stack, TextField, Text, Slider, ICommandBarItemProps, getTheme, DetailsList, IColumn, SelectionMode, CommandBar, mergeStyleSets } from "@fluentui/react";
+import { Stack, TextField, Text, Slider, ICommandBarItemProps, getTheme, DetailsList, IColumn, Selection, CommandBar, mergeStyleSets, SelectionMode } from "@fluentui/react";
 
 import { Blade, useBlade } from "./Host";
 import { Field } from "../Field";
@@ -22,8 +22,10 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
     const { setName, setBitCount, generateSet } = useStoreActions(store => store.bitsets);
 
     const buttons: ICommandBarItemProps[] = [
-        { key: "delete", text: "Delete", iconProps: { iconName: "Delete" } },
-        { key: "generate", text: "Generate", iconProps: { iconName: "NumberedList" }, onClick: generate }
+        { key: "generate", text: "Generate", iconProps: { iconName: "NumberedList" }, onClick: generate },
+    ];
+    const moreButtons: ICommandBarItemProps[] = [
+        { key: "generate", text: "Generate", iconProps: { iconName: "NumberedList" }, onClick: generate },
     ];
 
     const columns: IColumn[] = [
@@ -45,7 +47,7 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
     const theme = getTheme();
     const style = useStyle();
 
-    return <Blade title={bitSet?.name || "New bitset"} buttons={buttons}>
+    return <Blade title={bitSet?.name || "New bitset"} buttons={buttons} moreButtons={moreButtons}>
         <Stack tokens={{ childrenGap: theme.spacing.m }}>
             <Field label="Name" subLabel="of the Bitset">
                 <TextField value={bitSet?.name} onChange={onNameChanged} />
@@ -53,7 +55,7 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
             <Field label="Size" subLabel="in bits, of the Bitset">
                 <Slider min={1} max={16} value={bitSet?.bitCount} onChange={onBitCountChanged} disabled={!!bitSet.values} />
             </Field>
-            <DetailsList columns={columns} items={values} />
+            <DetailsList columns={columns} items={values} selectionMode={SelectionMode.none} />
         </Stack>
     </Blade>;
 
@@ -75,6 +77,8 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
     function onBitCountChanged(bitCount: number) {
         setBitCount({ id: props.id, bitCount });
     }
+    function onSelectionChanged() {
+    }
 
 
     /** Generates a full set of items based on the bitCount */
@@ -82,8 +86,19 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
         if (!bitSet.values) {
             // first time generate will lock bitCount
             // warn user about this.
-            blade.showDialog("title", "body", [{ text: "Generate" }, { text: "Cancel" }]);
+            blade.showDialog({
+                title: "title",
+                message: "body",
+                buttons: [
+                    { text: "Generate", onClick: executeGenerate },
+                    { text: "Cancel" }
+                ]
+            });
         } else {
+            generate();
+        }
+
+        function executeGenerate() {
             generateSet({ id: props.id });
         }
     }

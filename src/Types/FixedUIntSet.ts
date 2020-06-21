@@ -1,4 +1,4 @@
-import { FixedUInt, maxValueForBitCount } from "./FixedUInt";
+import { FixedUInt, maxValueForBitCount, toBase36, fromBase36 } from "./FixedUInt";
 import { Dictionary } from "../Types/Dictionary";
 
 export class FixedUIntMap<T> {
@@ -34,7 +34,7 @@ export class FixedUIntMap<T> {
         const maxValue = maxValueForBitCount(this._bitCount);
         if (value > maxValue)
             throw new Error(`value (${value}) out of range (${maxValue})`);
-        this.add(value, tag);
+        this._map.set(value, tag);
     }
 
     /** Gets the value at the specified index */
@@ -63,7 +63,7 @@ export class FixedUIntMap<T> {
     }
 
     /** Iterator on the value and their tags */
-    *items(): Generator<[FixedUInt, T]> {
+    public *items(): Generator<[FixedUInt, T]> {
         const bitCount = this._bitCount;
         for (const item of this._map) {
             yield [new FixedUInt(bitCount, item[0]), item[1]];
@@ -71,7 +71,7 @@ export class FixedUIntMap<T> {
     }
 
     /** Iterator on the values in the set */
-    *values(): Generator<FixedUInt> {
+    public *values(): Generator<FixedUInt> {
         const bitCount = this._bitCount;
         for (const item of this._map.keys()) {
             yield new FixedUInt(bitCount, item);
@@ -79,17 +79,31 @@ export class FixedUIntMap<T> {
     }
 
     /** Iterator on the naked values in the set */
-    *nakedValues(): Generator<bigint> {
+    public *nakedValues(): Generator<bigint> {
         for (const item of this._map.keys()) {
             yield item;
         }
     }
 
+
     public static parseDictionary<T>(bitCount: number, dict: Dictionary<T>): FixedUIntMap<T> {
         return new FixedUIntMap<T>(
             bitCount,
-            Object.entries(dict).map(([k, v]) => [BigInt(k), v]));
+            Object.entries(dict).map(([k, v]) => [fromBase36(k), v]));
     }
+
+    public toJSON(): { bitCount: number, values: Dictionary<T> } {
+        return {
+            bitCount: this._bitCount,
+            values: Object.fromEntries(this.jsonEntries())
+        }
+    }
+    private *jsonEntries(): Generator<[string, T]> {
+        for (const item of this._map) {
+            yield [toBase36(item[0]), item[1]];
+        }
+    }
+
 }
 
 /**

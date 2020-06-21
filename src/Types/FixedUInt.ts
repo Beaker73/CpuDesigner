@@ -124,3 +124,25 @@ export function* toFixedUInt(bitCount: number, values: Iterable<bigint>): Genera
 export function maxValueForBitCount(bitCount: number): bigint {
     return (1n << BigInt(bitCount)) - 1n;
 }
+
+export function fromBase36(value: string): bigint {
+
+    console.log({m: 'fromBase36', value});
+
+    // https://stackoverflow.com/questions/55646698/base-36-to-bigint
+    const radix = 36;
+
+    const size = 10;
+    const factor = BigInt(radix ** size);
+    let i = value.length % size || size;
+    const parts = [value.slice(0, i)];
+
+    while (i < value.length) 
+        parts.push(value.slice(i, i += size));
+
+    return parts.reduce((r, v) => r * factor + BigInt(parseInt(v, radix)), 0n);
+}
+
+export function toBase36(value: bigint): string {
+    return value.toString(36);
+}

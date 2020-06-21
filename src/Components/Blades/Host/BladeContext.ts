@@ -3,12 +3,14 @@ import { ICommandBarItemProps, IBaseButtonProps } from "@fluentui/react";
 
 import { BladeProps } from "./Blade";
 import { DefineBladeProps } from "./BladeHost";
+import { DialogProps } from "./Dialog";
 
 export interface BladeContext {
-    openBlade?(afterBladeId: number, blade: DefineBladeProps): void;
-    closeBlade?(bladeId: number): void;
     bladeId?: number;
     bladeProps?: BladeProps;
+    openBlade?(afterBladeId: number, blade: DefineBladeProps): void;
+    closeBlade?(bladeId: number): void;
+    showDialog?(bladeId: number, props: DialogProps): void;
 }
 
 export const bladeContext = React.createContext<BladeContext>({});
@@ -17,7 +19,7 @@ export type UseBladeResult = {
     openBlade<P extends {} = {}>(bladeType: React.FunctionComponent<P>, props?: P): void;
     replaceBlade<P extends {} = {}>(bladeType: React.FunctionComponent<P>, props?: P): void;
     closeBlade(): void;
-    showDialog(title: string, message: string, buttons: ReadonlyArray<IBaseButtonProps>): void;
+    showDialog(props: DialogProps): void;
 }
 
 export function useBlade(): UseBladeResult {
@@ -41,7 +43,13 @@ export function useBlade(): UseBladeResult {
                 context.closeBlade(context.bladeId);
             }
         },
-        showDialog: (title: string, message: string, buttons: ReadonlyArray<IBaseButtonProps>) => {
+        showDialog: (props: DialogProps) => {
+            console.log('showDialog');
+            console.log({ context })
+            if (context.showDialog !== void 0 && context.bladeId !== void 0) {
+                console.log(`showDialog on blade ${context.bladeId}`);
+                context.showDialog(context.bladeId, props)
+            }
         }
     };
 }

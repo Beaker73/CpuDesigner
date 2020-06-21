@@ -8,6 +8,7 @@ export interface BladeProps {
     size?: number;
     title?: string;
     buttons?: ICommandBarItemProps[];
+    moreButtons?: ICommandBarItemProps[];
 }
 
 export function Blade(props: React.PropsWithChildren<BladeProps>): JSX.Element {
@@ -25,12 +26,14 @@ export function Blade(props: React.PropsWithChildren<BladeProps>): JSX.Element {
     const farItems: ICommandBarItemProps[] = props.buttons ? [...props?.buttons] : [];
     if (bladeId > 0)
         farItems.push({ key: "close", iconOnly: true, onClick: closeBlade, iconProps: { iconName: "ChromeClose" } });
+    const moreItems: ICommandBarItemProps[] = props.moreButtons ? [...props?.moreButtons] : [];
 
     return <bladeContext.Provider value={{ ...context, bladeProps: props }}>
         <FocusZone>
             <Stack className={style.bladeContainer}>
                 <Stack.Item grow={0}>
-                    <CommandBar styles={{ root: { padding: 0 } }} items={items} farItems={farItems} />
+                    <CommandBar styles={{ root: { padding: 0 } }} items={items}
+                        farItems={farItems} overflowItems={moreItems} />
                 </Stack.Item>
                 <Stack.Item grow={1}>
                     <ErrorBoundary>

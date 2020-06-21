@@ -7,10 +7,11 @@ import { OpcodesListBlade } from "./OpcodesListBlade";
 
 import { Field } from "../Field";
 import { useStoreState, useStoreActions } from "../../Store";
+import { bladeContext } from "./Host/BladeContext";
 
 export function ArchitectureBlade(): JSX.Element {
 
-    const { openBlade } = useBlade();
+    const { openBlade, showDialog } = useBlade();
     const { name, bitCount } = useStoreState(store => store.architecture);
     const { setName, setBitCount } = useStoreActions(store => store.architecture);
     const theme = getTheme();
@@ -27,6 +28,7 @@ export function ArchitectureBlade(): JSX.Element {
                 <Stack horizontal tokens={{ childrenGap: theme.spacing.m }}>
                     <Button onClick={openBitsets}>Bitsets...</Button>
                     <Button onClick={openOpcodes}>Opcodes...</Button>
+                    <Button onClick={testDialog}>Test...</Button>
                 </Stack>
             </Stack.Item>
         </Stack>
@@ -38,5 +40,11 @@ export function ArchitectureBlade(): JSX.Element {
 
     function openOpcodes(): void {
         openBlade(OpcodesListBlade);
+    }
+    function testDialog(): void {
+        showDialog({
+            title: "test",
+            message: "Banaan",
+        })
     }
 }

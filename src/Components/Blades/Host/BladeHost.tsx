@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect, PropsWithChildren } from "react";
 
 import { bladeContext } from "./BladeContext";
 import { BladeList } from "./BladeList";
+import { DialogProps, Dialog } from "./Dialog";
+import { Dictionary } from "../../../Types";
 
 export interface BladeHostProps extends React.HTMLAttributes<HTMLDivElement> {
     root: DefineBladeProps;
@@ -19,13 +21,15 @@ export interface DefineBladeProps {
 export function BladeHost(props: BladeHostProps): JSX.Element {
 
     const [blades, setBlades] = useState<DefineBladeProps[]>([props.root]);
+    const [dialogs, setDialogs] = useState<Dictionary<DialogProps>>({});
 
     const bladeInstances = blades.map((blade, i) => {
         const BladeType = blade.bladeType;
-        return <bladeContext.Provider value={{ openBlade, closeBlade, bladeId: i }}>
+        const dialogProps = dialogs[i];
+        return <bladeContext.Provider value={{ openBlade, closeBlade, showDialog, bladeId: i }}>
             <BladeType key={blade.bladeType.name + ":" + JSON.stringify(blade.bladeProps)} {...blade.bladeProps} />
+            {dialogProps ? <Dialog {...dialogProps} onClose={() => closeDialog(i)} /> : undefined}
         </bladeContext.Provider>
-
     });
 
     return <bladeContext.Provider value={{ openBlade }}>
@@ -40,5 +44,22 @@ export function BladeHost(props: BladeHostProps): JSX.Element {
 
     function closeBlade(bladeId: number) {
         setBlades(b => b.slice(0, bladeId));
+    }
+
+    function showDialog(bladeId: number, dialogProps: DialogProps) {
+        console.log("setting dialog")
+        setDialogs(d => {
+            const clone = { ...d };
+            clone[bladeId] = dialogProps
+            return clone;
+        });
+    }
+
+    function closeDialog(bladeId: number) {
+        setDialogs(d => {
+            const clone = { ...d };
+            delete clone[bladeId];
+            return clone;
+        });
     }
 }
