@@ -23,6 +23,8 @@ export interface BitsetsStoreModel extends BitsetsStoreState {
     getBitsetById: Computed<BitsetsStoreModel, (id: uuid) => Bitset | undefined>;
     /** Adds a the bitset */
     addBitset: Action<BitsetsStoreModel, Bitset>;
+    /** Deletes the bitset wit i */
+    deleteBitset: Action<BitsetsStoreModel, {id: uuid}>;
     /** Creates a new bitset */
     newBitset: Thunk<BitsetsStoreModel, NewBitsetPayload, void, StoreModel, Bitset>;
     /** Generate a full set of entries for the bitset */

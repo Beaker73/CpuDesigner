@@ -24,6 +24,9 @@ export const bitsetsStore: BitsetsStoreModel = {
     addBitset: action((state, payload) => {
         state.bitSetsById[payload.id] = payload;
     }),
+    deleteBitset: action((state,payload) => {
+        delete state.bitSetsById[payload.id];
+    }),
     newBitset: thunk(({ addBitset }, payload) => {
 
         // create the bitset filled with those values

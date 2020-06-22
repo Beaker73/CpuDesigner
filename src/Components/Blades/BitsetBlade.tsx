@@ -21,7 +21,7 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
     const style = useMemo(useStyle, [theme]);
 
     const bitSet = useStoreState(store => store.bitsets.bitSetsById[props.id]);
-    const { setName, setBitCount, generateSet } = useStoreActions(store => store.bitsets);
+    const { setName, setBitCount, generateSet, deleteBitset } = useStoreActions(store => store.bitsets);
 
     const buttons: ICommandBarItemProps[] = [
         { key: "generate", text: "Generate", iconProps: { iconName: "NumberedList" }, onClick: requestGenerate },
@@ -90,7 +90,7 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
         });
 
         function executeDelete() {
-            // TODO
+            deleteBitset({id: bitSet.id});
             blade.closeBlade();
         }
     }
