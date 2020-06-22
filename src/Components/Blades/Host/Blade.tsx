@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from "react";
-import { FocusZone, Stack, Text, getTheme, mergeStyleSets, mergeStyles, AnimationStyles, CommandBar, ICommandBarProps, ICommandBarItemProps, ContextualMenuItemType } from "@fluentui/react";
+import { FocusZone, Stack, Text, getTheme, mergeStyleSets, mergeStyles, AnimationStyles, CommandBar, ICommandBarProps, ICommandBarItemProps, ContextualMenuItemType, IContextualMenuItem } from "@fluentui/react";
 
 import { bladeContext } from "./BladeContext";
 import { ErrorBoundary } from "../../ErrorBoundary";
@@ -8,7 +8,7 @@ export interface BladeProps {
     size?: number;
     title?: string;
     buttons?: ICommandBarItemProps[];
-    moreButtons?: ICommandBarItemProps[];
+    menuItems?: IContextualMenuItem[];
 }
 
 export function Blade(props: React.PropsWithChildren<BladeProps>): JSX.Element {
@@ -26,14 +26,14 @@ export function Blade(props: React.PropsWithChildren<BladeProps>): JSX.Element {
     const farItems: ICommandBarItemProps[] = props.buttons ? [...props?.buttons] : [];
     if (bladeId > 0)
         farItems.push({ key: "close", iconOnly: true, onClick: closeBlade, iconProps: { iconName: "ChromeClose" } });
-    const moreItems: ICommandBarItemProps[] = props.moreButtons ? [...props?.moreButtons] : [];
+    const menuItems: ICommandBarItemProps[] = props.menuItems ? [...props?.menuItems] : [];
 
     return <bladeContext.Provider value={{ ...context, bladeProps: props }}>
         <FocusZone>
             <Stack className={style.bladeContainer}>
                 <Stack.Item grow={0}>
                     <CommandBar styles={{ root: { padding: 0 } }} items={items}
-                        farItems={farItems} overflowItems={moreItems} />
+                        farItems={farItems} overflowItems={menuItems} />
                 </Stack.Item>
                 <Stack.Item grow={1}>
                     <ErrorBoundary>

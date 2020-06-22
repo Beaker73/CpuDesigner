@@ -1,9 +1,12 @@
-import { Dialog as FluentDialog, DialogFooter, IModalProps, IDialogContentProps, PrimaryButton, Button, IButtonProps } from "@fluentui/react";
-import React from "react";
+import { Dialog as FluentDialog, DialogFooter, IModalProps, IDialogContentProps, PrimaryButton, Button, IButtonProps, getTheme } from "@fluentui/react";
+import React, { useMemo } from "react";
+
+export type VariantName = "Warning" | "SevereWarning";
 
 export interface DialogProps {
     title?: string | JSX.Element,
     message?: string,
+    variant?: VariantName,
     onRenderBody?: () => JSX.Element,
     buttons?: IButtonProps[],
     onClose?: () => void;
@@ -16,13 +19,19 @@ export function Dialog(props: DialogProps): JSX.Element {
         subText: props.message,
     };
     const modal: IModalProps = {
+        overlay: {
+            
+        }
     }
+    const theme = getTheme();
+    const variantStyle: React.CSSProperties | undefined = 
+        useMemo(() => getVariantStyle(props.variant), [props.variant, theme]);
 
     const buttons = !props.buttons
         ? undefined
         : props.buttons.map((b, i) => {
             if (i == 0)
-                return <PrimaryButton {...b} onClick={click} />;
+                return <PrimaryButton {...b} onClick={click} style={variantStyle} />;
             return <Button {...b} onClick={click} />;
 
             function click<T>(e?: React.MouseEvent<T>): void {
@@ -44,5 +53,22 @@ export function Dialog(props: DialogProps): JSX.Element {
     function sendClose(): void {
         if(props.onClose)
             props.onClose();
+    }
+
+    function getVariantStyle(variant?: VariantName): React.CSSProperties | undefined {
+        switch(variant) {
+            case "Warning":
+                return {
+                    backgroundColor: theme.palette.orange,
+                    borderColor: theme.palette.orange,
+                };
+            case "SevereWarning": 
+            return {
+                backgroundColor: theme.palette.red,
+                borderColor: theme.palette.red,
+            };
+    }
+
+        return undefined;
     }
 }

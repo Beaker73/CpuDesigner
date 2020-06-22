@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { uuid } from "../../Types/uuid";
-import { Stack, TextField, Text, Slider, ICommandBarItemProps, getTheme, DetailsList, IColumn, Selection, CommandBar, mergeStyleSets, SelectionMode } from "@fluentui/react";
+import { Stack, TextField, Text, Slider, ICommandBarItemProps, getTheme, DetailsList, IColumn, Selection, CommandBar, mergeStyleSets, SelectionMode, IContextualMenuItemProps, IContextualMenuItem } from "@fluentui/react";
 
 import { Blade, useBlade } from "./Host";
 import { Field } from "../Field";
@@ -17,15 +17,17 @@ type Item = { value: FixedUInt, name: string };
 export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
 
     const blade = useBlade();
+    const theme = getTheme();
+    const style = useMemo(useStyle, [theme]);
 
     const bitSet = useStoreState(store => store.bitsets.bitSetsById[props.id]);
     const { setName, setBitCount, generateSet } = useStoreActions(store => store.bitsets);
 
     const buttons: ICommandBarItemProps[] = [
-        { key: "generate", text: "Generate", iconProps: { iconName: "NumberedList" }, onClick: generate },
+        { key: "generate", text: "Generate", iconProps: { iconName: "NumberedList" }, onClick: requestGenerate },
     ];
-    const moreButtons: ICommandBarItemProps[] = [
-        { key: "generate", text: "Generate", iconProps: { iconName: "NumberedList" }, onClick: generate },
+    const menuItems: IContextualMenuItem[] = [
+        { key: "delete", text: "Delete Bitset", iconProps: { iconName: "Delete", style: { color: theme.semanticColors.severeWarningIcon } }, onClick: requestDelete },
     ];
 
     const columns: IColumn[] = [
@@ -44,10 +46,7 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
             return 0;
         });
 
-    const theme = getTheme();
-    const style = useStyle();
-
-    return <Blade title={bitSet?.name || "New bitset"} buttons={buttons} moreButtons={moreButtons}>
+    return <Blade title={bitSet?.name || "New bitset"} buttons={buttons} menuItems={menuItems}>
         <Stack tokens={{ childrenGap: theme.spacing.m }}>
             <Field label="Name" subLabel="of the Bitset">
                 <TextField value={bitSet?.name} onChange={onNameChanged} />
@@ -77,12 +76,28 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
     function onBitCountChanged(bitCount: number) {
         setBitCount({ id: props.id, bitCount });
     }
-    function onSelectionChanged() {
+
+    function requestDelete() {
+
+        blade.showDialog({
+            title: "Delete Bitset",
+            variant: "SevereWarning",
+            message: `Are you sure you want to delete the bitset ${bitSet?.name}?`,
+            buttons: [
+                { text: "Delete", onClick: executeDelete },
+                { text: "Cancel" }
+            ]
+        });
+
+        function executeDelete() {
+            // TODO
+            blade.closeBlade();
+        }
     }
 
 
     /** Generates a full set of items based on the bitCount */
-    function generate() {
+    function requestGenerate() {
         if (!bitSet.values) {
             // first time generate will lock bitCount
             // warn user about this.
@@ -95,7 +110,7 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
                 ]
             });
         } else {
-            generate();
+            executeGenerate();
         }
 
         function executeGenerate() {
