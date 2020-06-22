@@ -1,6 +1,6 @@
 import { BitsetsStoreModel } from "./StoreModel";
 import { action, computed, thunk } from "easy-peasy";
-import { Bitset } from "./Models/Bitset";
+import { Bitset, BitsetValueTag } from "./Models/Bitset";
 import { maxValueForBitCount } from "../../Types/FixedUInt";
 import { FixedUIntMap } from "../../Types/FixedUIntSet";
 
@@ -46,15 +46,23 @@ export const bitsetsStore: BitsetsStoreModel = {
             bitset.values.update(payload.value, payload.tag);
         }
     }),
+    deleteValue: action((state, payload) => {
+        const bitset = state.bitSetsById[payload.id];
+        if(bitset && bitset.values) {
+            bitset.values.delete(payload.value);
+        }
+    }),
     generateSet: action((state, payload) => {
         const bitSet = state.bitSetsById[payload.id];
         if (bitSet) {
-            bitSet.values = new FixedUIntMap(bitSet.bitCount);
+            if(!bitSet.values)
+                bitSet.values = new FixedUIntMap<BitsetValueTag>(bitSet.bitCount);
             const maxValue = maxValueForBitCount(bitSet.bitCount);
             for (let i = 0n; i <= maxValue; i++) {
-                const key = i.toString();
-                if (!(key in bitSet.values))
+                debugger;
+                if (!bitSet.values.has(i)) {
                     bitSet.values.add(i, {name: i.toString()});
+                }
             }
         }
     }),

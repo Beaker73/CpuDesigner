@@ -24,6 +24,19 @@ export class FixedUIntMap<T> {
         }
     }
 
+    public has(value: FixedUInt | bigint) {
+        debugger;
+        if (value instanceof FixedUInt) {
+            if (value.bitCount > this._bitCount)
+                throw new Error(`bitCount $(value.bitCount) of value out of range ($this._bitCount)`);
+            value = value.value;
+        }
+        const maxValue = maxValueForBitCount(this._bitCount);
+        if (value > maxValue)
+            throw new Error(`value (${value}) out of range (${maxValue})`);
+        return this._map.has(value);
+    }
+
     /** Add the value to the map */
     public add(value: FixedUInt | bigint, tag: T) {
         if (value instanceof FixedUInt) {
@@ -48,6 +61,17 @@ export class FixedUIntMap<T> {
         if (!this._map.has(value))
             throw new Error("No value ${value} found in map");
         this._map.set(value, tag);
+    }
+    public delete(value: FixedUInt | bigint): void {
+        if (value instanceof FixedUInt) {
+            if (value.bitCount > this._bitCount)
+                throw new Error(`bitCount $(value.bitCount) of value out of range ($this._bitCount)`);
+            value = value.value;
+        }
+        const maxValue = maxValueForBitCount(this._bitCount);
+        if (value > maxValue)
+            throw new Error(`value (${value}) out of range (${maxValue})`);
+        this._map.delete(value);
     }
 
     /** Gets the value at the specified index */

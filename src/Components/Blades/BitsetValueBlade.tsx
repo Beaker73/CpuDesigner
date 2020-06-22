@@ -1,11 +1,11 @@
 import React from "react";
 
-import { Blade } from "./Host";
+import { Blade, useBlade } from "./Host";
 import { uuid } from "../../Types/uuid";
 import { FixedUInt } from "../../Types/FixedUInt";
 import { useStoreState, useStoreActions } from "../../Store";
 import { Field } from "../Field";
-import { TextField } from "@fluentui/react";
+import { TextField, IContextualMenuItem, getTheme } from "@fluentui/react";
 import { Bitset } from "../../Store/Bitsets/Models/Bitset";
 
 export interface BitsetValueBladeProps {
@@ -15,15 +15,21 @@ export interface BitsetValueBladeProps {
 
 export function BitsetValueBlade(props: BitsetValueBladeProps): JSX.Element {
 
+    const blade = useBlade();
+    const theme = getTheme();
+
     const [bitset, value, tag] = useStoreState(store => {
         const bs: Bitset = store.bitsets.bitSetsById[props.bitsetId];
         const t = bs.values?.get(props.value) ?? [props.value, { name: props.value.toString() }];
         return [bs, ...t];
     });
 
-    const { setValueTag } = useStoreActions(store => store.bitsets);
+    const { setValueTag, deleteValue } = useStoreActions(store => store.bitsets);
+    const menuItems: IContextualMenuItem[] = [
+        { key: "delete", text: "Delete Value", iconProps: { iconName: "Delete", style: { color: theme.semanticColors.severeWarningIcon } }, onClick: requestDelete },
+    ];
 
-    return <Blade title={`${value.value.toString(2)}: ${tag.name}`}>
+    return <Blade title={`${value.value.toString(2)}: ${tag.name}`} menuItems={menuItems}>
         <Field label="Value">
             {value.value.toString(2)}
         </Field>
@@ -50,5 +56,23 @@ export function BitsetValueBlade(props: BitsetValueBladeProps): JSX.Element {
                 description: newDescription || undefined
             }
         });
+    }
+
+    function requestDelete() {
+
+        blade.showDialog({
+            title: "Delete Bitset",
+            variant: "SevereWarning",
+            message: `Are you sure you want to delete the value ${tag.name} (${value}) from the bitset ${bitset?.name}?`,
+            buttons: [
+                { text: "Delete", onClick: executeDelete },
+                { text: "Cancel" }
+            ]
+        });
+
+        function executeDelete() {
+            deleteValue({id: bitset.id, value: value});
+            blade.closeBlade();
+        }
     }
 }

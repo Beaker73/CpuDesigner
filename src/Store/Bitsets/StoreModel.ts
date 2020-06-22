@@ -25,23 +25,25 @@ export interface BitsetsStoreModel extends BitsetsStoreState {
     /** Adds a the bitset */
     addBitset: Action<BitsetsStoreModel, Bitset>;
     /** Deletes the bitset with id */
-    deleteBitset: Action<BitsetsStoreModel, {id: uuid}>;
+    deleteBitset: Action<BitsetsStoreModel, { id: uuid }>;
     /** Creates a new bitset */
     newBitset: Thunk<BitsetsStoreModel, NewBitsetPayload, void, StoreModel, Bitset>;
     /** Generate a full set of entries for the bitset */
     generateSet: Action<BitsetsStoreModel, { id: uuid }>
     /** Updates the tag (name, description etc) of the value of a bitset */
-    setValueTag: Action<BitsetsStoreModel, { id: uuid, value: FixedUInt, tag: BitsetValueTag}>;
+    setValueTag: Action<BitsetsStoreModel, { id: uuid, value: FixedUInt, tag: BitsetValueTag }>;
+    /** Deletes the value from the bitset */
+    deleteValue: Action<BitsetsStoreModel, { id: uuid, value: FixedUInt }>;
 }
 
 export function deserializeBitsetsState(state: BitsetsStoreState): BitsetsStoreState {
     return {
         bitSetsById: Object.fromEntries(Object
             .entries(state.bitSetsById)
-            .map(([k,v]) => ([k, ({
+            .map(([k, v]) => ([k, ({
                 ...v,
-                values: !v.values 
-                    ? null 
+                values: !v.values
+                    ? null
                     : FixedUIntMap.parseDictionary(v.values.bitCount, v.values.values as unknown as Dictionary<BitsetValueTag>)
             })]))),
     }
