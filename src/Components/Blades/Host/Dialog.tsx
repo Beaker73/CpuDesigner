@@ -1,4 +1,4 @@
-import { Dialog as FluentDialog, DialogFooter, IModalProps, IDialogContentProps, PrimaryButton, Button, IButtonProps, getTheme } from "@fluentui/react";
+import { Dialog as FluentDialog, DialogFooter, IModalProps, IDialogContentProps, PrimaryButton, Button, IButtonProps, getTheme, DefaultButton } from "@fluentui/react";
 import React, { useMemo } from "react";
 
 export type VariantName = "Warning" | "SevereWarning";
@@ -32,7 +32,7 @@ export function Dialog(props: DialogProps): JSX.Element {
         : props.buttons.map((b, i) => {
             if (i == 0)
                 return <PrimaryButton {...b} onClick={click} style={variantStyle} />;
-            return <Button {...b} onClick={click} />;
+            return <DefaultButton {...b} onClick={click} />;
 
             function click<T>(e?: React.MouseEvent<T>): void {
                 if (b.onClick)
@@ -40,8 +40,6 @@ export function Dialog(props: DialogProps): JSX.Element {
                 sendClose();
             }
         });
-
-    console.log({ type: 'Dialog', props });
 
     return <FluentDialog hidden={false} dialogContentProps={content} modalProps={modal} onDismiss={sendClose} >
         {props.onRenderBody ? props.onRenderBody() : undefined}

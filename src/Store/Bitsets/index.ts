@@ -40,7 +40,12 @@ export const bitsetsStore: BitsetsStoreModel = {
 
         return bitset;
     }),
-
+    setValueTag: action((state, payload) => {
+        const bitset = state.bitSetsById[payload.id];
+        if(bitset && bitset.values) {
+            bitset.values.update(payload.value, payload.tag);
+        }
+    }),
     generateSet: action((state, payload) => {
         const bitSet = state.bitSetsById[payload.id];
         if (bitSet) {
@@ -49,7 +54,7 @@ export const bitsetsStore: BitsetsStoreModel = {
             for (let i = 0n; i <= maxValue; i++) {
                 const key = i.toString();
                 if (!(key in bitSet.values))
-                    bitSet.values.add(i, i.toString());
+                    bitSet.values.add(i, {name: i.toString()});
             }
         }
     }),

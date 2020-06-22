@@ -47,7 +47,6 @@ export function BladeHost(props: BladeHostProps): JSX.Element {
     }
 
     function showDialog(bladeId: number, dialogProps: DialogProps) {
-        console.log("setting dialog")
         setDialogs(d => {
             const clone = { ...d };
             clone[bladeId] = dialogProps

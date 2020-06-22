@@ -34,7 +34,6 @@ export function useBlade(): UseBladeResult {
         },
         replaceBlade: (bladeType: React.FunctionComponent<{}>, bladeProps) => {
             if (context.openBlade !== void 0 && context.bladeId !== void 0) {
-                console.log({ id: context.bladeId, bladeType, props: bladeProps });
                 context.openBlade(context.bladeId - 1, { bladeType, bladeProps: bladeProps ?? {} });
             }
         },
@@ -44,10 +43,7 @@ export function useBlade(): UseBladeResult {
             }
         },
         showDialog: (props: DialogProps) => {
-            console.log('showDialog');
-            console.log({ context })
             if (context.showDialog !== void 0 && context.bladeId !== void 0) {
-                console.log(`showDialog on blade ${context.bladeId}`);
                 context.showDialog(context.bladeId, props)
             }
         }

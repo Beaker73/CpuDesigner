@@ -4,6 +4,7 @@ import { Stack, TextField, Text, Slider, ICommandBarItemProps, getTheme, Details
 
 import { Blade, useBlade } from "./Host";
 import { Field } from "../Field";
+import { BitsetValueBlade } from "./BitsetValueBlade";
 
 import { useStoreState, useStoreActions } from "../../Store";
 import { FixedUInt } from "../../Types/FixedUInt";
@@ -36,7 +37,7 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
     ];
 
     const values = (bitSet?.values ? [...bitSet.values.items()] : [])
-        .map(i => ({ value: i[0], name: i[1] }))
+        .map(i => ({ value: i[0], name: i[1].name }))
         .sort((a, b) => {
             const cmp = a.value.value - b.value.value;
             if (cmp < 0n)
@@ -54,7 +55,7 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
             <Field label="Size" subLabel="in bits, of the Bitset">
                 <Slider min={1} max={16} value={bitSet?.bitCount} onChange={onBitCountChanged} disabled={!!bitSet.values} />
             </Field>
-            <DetailsList columns={columns} items={values} selectionMode={SelectionMode.none} />
+            <DetailsList columns={columns} items={values} selectionMode={SelectionMode.none} onActiveItemChanged={editItem} />
         </Stack>
     </Blade>;
 
@@ -76,6 +77,11 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
     function onBitCountChanged(bitCount: number) {
         setBitCount({ id: props.id, bitCount });
     }
+    function editItem(item: Item): void {
+        if (bitSet && item) {
+            blade.openBlade(BitsetValueBlade, { bitsetId: bitSet.id, value: item.value });
+        }
+    }
 
     function requestDelete() {
 
@@ -90,7 +96,7 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
         });
 
         function executeDelete() {
-            deleteBitset({id: bitSet.id});
+            deleteBitset({ id: bitSet.id });
             blade.closeBlade();
         }
     }
@@ -102,8 +108,8 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
             // first time generate will lock bitCount
             // warn user about this.
             blade.showDialog({
-                title: "title",
-                message: "body",
+                title: "Generate Bitset Values",
+                message: "Do you want to generate a full set of values for the bit? This will lock the bit count of the set.",
                 buttons: [
                     { text: "Generate", onClick: executeGenerate },
                     { text: "Cancel" }

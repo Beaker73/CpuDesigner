@@ -44,7 +44,6 @@ export function BitsetsListBlade(): JSX.Element {
         const maxSize = maxValueForBitCount(item.bitCount) + 1n;
         if (!item.values)
             return "-/" + maxSize;
-        console.log({ values: item.values, size: item.values.size });
         return item.values.size + "/" + maxSize;
 
     }

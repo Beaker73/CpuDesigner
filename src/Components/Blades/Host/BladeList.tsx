@@ -28,7 +28,6 @@ export function BladeList(props: React.PropsWithChildren<BladeListProps>): JSX.E
     const scrollRef = useRef<HTMLDivElement | null>(null);
     const childCount = Children.count(props.children);
     useEffect(() => {
-        console.log('scroll effect')
         window.setTimeout(() => scrollRef.current?.scrollIntoView({ behavior: "smooth" }), 400);
     }, [childCount]);
 

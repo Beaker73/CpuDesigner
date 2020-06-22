@@ -1,10 +1,11 @@
 import { Action, Thunk, Computed } from "easy-peasy";
 
-import { Bitset } from "./Models/Bitset";
+import { Bitset, BitsetValueTag } from "./Models/Bitset";
 import { Dictionary } from "../../Types/Dictionary";
 import { uuid } from "../../Types/uuid";
 import { StoreModel } from "..";
 import { FixedUIntMap } from "../../Types/FixedUIntSet";
+import { FixedUInt } from "../../Types/FixedUInt";
 
 type NewBitsetPayload = { id: uuid }
 
@@ -23,12 +24,14 @@ export interface BitsetsStoreModel extends BitsetsStoreState {
     getBitsetById: Computed<BitsetsStoreModel, (id: uuid) => Bitset | undefined>;
     /** Adds a the bitset */
     addBitset: Action<BitsetsStoreModel, Bitset>;
-    /** Deletes the bitset wit i */
+    /** Deletes the bitset with id */
     deleteBitset: Action<BitsetsStoreModel, {id: uuid}>;
     /** Creates a new bitset */
     newBitset: Thunk<BitsetsStoreModel, NewBitsetPayload, void, StoreModel, Bitset>;
     /** Generate a full set of entries for the bitset */
     generateSet: Action<BitsetsStoreModel, { id: uuid }>
+    /** Updates the tag (name, description etc) of the value of a bitset */
+    setValueTag: Action<BitsetsStoreModel, { id: uuid, value: FixedUInt, tag: BitsetValueTag}>;
 }
 
 export function deserializeBitsetsState(state: BitsetsStoreState): BitsetsStoreState {
@@ -39,7 +42,7 @@ export function deserializeBitsetsState(state: BitsetsStoreState): BitsetsStoreS
                 ...v,
                 values: !v.values 
                     ? null 
-                    : FixedUIntMap.parseDictionary(v.values.bitCount, v.values.values as unknown as Dictionary<string>)
+                    : FixedUIntMap.parseDictionary(v.values.bitCount, v.values.values as unknown as Dictionary<BitsetValueTag>)
             })]))),
     }
 }

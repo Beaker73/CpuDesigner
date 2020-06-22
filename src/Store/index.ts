@@ -17,7 +17,6 @@ const rootStore: StoreModel = {
 
 const transformer = createTransform(
     (data, key) => {
-        console.log({ location: 'transformer-inbound', data, key });
         return data;
     },
     (data, key) => {
@@ -26,7 +25,6 @@ const transformer = createTransform(
                 data = deserializeBitsetsState(data);
                 break;
         }
-        console.log({ location: 'transformer-outbound', data, key });
         return data;
     }
 );
