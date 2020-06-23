@@ -1,5 +1,4 @@
 import { uuid } from "../../../Types/uuid";
-import { Dictionary } from "../../../Types/Dictionary";
 import { FixedUIntMap } from "../../../Types/FixedUIntSet";
 import { FixedUInt } from "../../../Types/FixedUInt";
 
