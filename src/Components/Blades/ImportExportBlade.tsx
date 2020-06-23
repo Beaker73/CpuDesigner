@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useMemo, useRef } from "react";
 import { saveAs } from "file-saver";
-import { DefaultButton, Stack, getTheme } from "@fluentui/react";
+import { DefaultButton, Stack, getTheme, mergeStyleSets } from "@fluentui/react";
 
 import { Blade } from "./Host";
 import { Field } from "../Field";
 import { useStoreState } from "../../Store";
+import { FileButton } from "../FileButton";
 
 export interface ImportExportBladeProps {
 }
@@ -18,9 +19,8 @@ export function ImportExportBlade(props: ImportExportBladeProps): JSX.Element {
         <Stack tokens={{ childrenGap: theme.spacing.m }}>
             <Field label="Full architecture">
                 <Stack horizontal tokens={{ childrenGap: theme.spacing.m }}>
-                    <input type="file" onChange={onFile} accept=".json" />
-                    <DefaultButton iconProps={{ iconName: "FolderOpen" }}>Load...</DefaultButton>
-                    <DefaultButton iconProps={{ iconName: "Save" }} onClick={generate}>Save As...</DefaultButton>
+                    <FileButton mimeType="application/json" onClick={onFileSelected} iconProps={{ iconName: "Upload" }}>Upload...</FileButton>
+                    <DefaultButton iconProps={{ iconName: "Download" }} onClick={generate}>Download</DefaultButton>
                 </Stack>
             </Field>
             <Field label="Arch.json file" subLabel="8 bit workshop" url="https://8bitworkshop.com/redir.html?platform=verilog">
@@ -36,28 +36,22 @@ export function ImportExportBlade(props: ImportExportBladeProps): JSX.Element {
         saveAs(blob, "arch.json");
     }
 
-    function onFile<T>(e: React.ChangeEvent<T>): void {
-        const files: FileList | undefined = (e.target as any).files;
-        if (files && files.length) {
-            const file = files[0];
-            if (file.type === "application/json") {
-                const reader = new FileReader();
-                reader.addEventListener("load", e => {
-                    if (e.target) {
-                        const json = e.target.result;
-                        if (typeof (json) === "string") {
-                            const targetState = JSON.parse(json);
-                            // for now we replace local storage and reload page.
-                            Object.entries(targetState)
-                                .forEach(([k, v]) => {
-                                    localStorage.setItem("[EasyPeasyStore]@" + k, JSON.stringify({ data: v }));
-                                });
-                            window.location.reload();
-                        }
-                    }
-                });
-                reader.readAsText(file);
+    function onFileSelected(file: File): void {
+        const reader = new FileReader();
+        reader.addEventListener("load", e => {
+            if (e.target) {
+                const json = e.target.result;
+                if (typeof (json) === "string") {
+                    const targetState = JSON.parse(json);
+                    // for now we replace local storage and reload page.
+                    Object.entries(targetState)
+                        .forEach(([k, v]) => {
+                            localStorage.setItem("[EasyPeasyStore]@" + k, JSON.stringify({ data: v }));
+                        });
+                    window.location.reload();
+                }
             }
-        }
+        });
+        reader.readAsText(file);
     }
 }

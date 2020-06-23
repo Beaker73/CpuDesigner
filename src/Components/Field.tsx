@@ -30,7 +30,7 @@ export function Field(props: PropsWithChildren<FieldProps>): JSX.Element {
             return <>&nbsp;
                 <a href={props.url} target="_blank">{render()}</a>
             </>;
-        return <>&nbsp;render()</>;
+        return <>&nbsp;{render()}</>;
 
         function render() {
             return <Text variant="small" style={{ opacity: 0.5 }}>{props.subLabel}</Text>;

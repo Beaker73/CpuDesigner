@@ -20,7 +20,9 @@ export function BitsetsListBlade(): JSX.Element {
         { key: "values", name: "Values", minWidth: 50, onRender: countValues },
     ];
 
-    const items: Bitset[] = Object.values(bitSets);
+    const items: Bitset[] = Object
+        .values(bitSets)
+        .sort((a,b) => a.name > b.name ? 1 : a.name < b.name ? -1 : 0);
 
     const buttons: ICommandBarItemProps[] = [
         { key: "add", name: "Add", iconProps: { iconName: "Add" }, onClick: addBitset },

@@ -23,7 +23,7 @@ export function ArchitectureBlade(): JSX.Element {
     return <Blade title="Architecture" buttons={buttons}>
         <Stack tokens={{ childrenGap: theme.spacing.m }}>
             <Field label="Instruction Width" subLabel="in bits">
-                <Slider min={1} max={256} value={bitCount} onChange={n => setBitCount(n)}></Slider>
+                <Slider min={1} max={32} value={bitCount} onChange={n => setBitCount(n)}></Slider>
             </Field>
             <Field label="Name" subLabel="of the Architecture">
                 <TextField value={name} onChange={(e, t) => setName(t ?? "")} />
