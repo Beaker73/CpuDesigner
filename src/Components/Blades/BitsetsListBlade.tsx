@@ -23,7 +23,7 @@ export function BitsetsListBlade(): JSX.Element {
     const items: Bitset[] = Object.values(bitSets);
 
     const buttons: ICommandBarItemProps[] = [
-        { key: "add", name: "Add...", iconProps: { iconName: "Add" }, onClick: addBitset },
+        { key: "add", name: "Add", iconProps: { iconName: "Add" }, onClick: addBitset },
     ];
 
     return <Blade title="Bitsets" buttons={buttons}>

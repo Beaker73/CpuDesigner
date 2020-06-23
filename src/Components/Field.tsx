@@ -4,6 +4,7 @@ import { Stack, Label, Text, ICommandBarItemProps, CommandBar, ContextualMenuIte
 export interface FieldProps {
     label: string,
     subLabel?: string,
+    url?: string,
     buttons?: ICommandBarItemProps[],
 }
 
@@ -20,9 +21,19 @@ export function Field(props: PropsWithChildren<FieldProps>): JSX.Element {
 
     function renderLabel(): JSX.Element {
         return <Label>{props.label}
-            { props.subLabel 
-                ? <Text variant="small" style={{ opacity: 0.5 }}>&nbsp;{props.subLabel}</Text>
-                : void 0 }
+            { props.subLabel ? renderSubLabel() : undefined } 
         </Label>
+    }
+
+    function renderSubLabel(): JSX.Element | undefined {
+        if(props.url)
+            return <>&nbsp;
+                <a href={props.url} target="_blank">{render()}</a>
+            </>;
+        return <>&nbsp;render()</>;
+
+        function render() {
+            return <Text variant="small" style={{ opacity: 0.5 }}>{props.subLabel}</Text>;
+        }
     }
 }

@@ -14,7 +14,7 @@ export function OpcodesListBlade(): JSX.Element {
     const items: any[] = [];
 
     const buttons: ICommandBarItemProps[] = [
-        { key: "add", name: "Add...", iconProps: { iconName: "Add" }, onClick: addOpcode }, 
+        { key: "add", name: "Add", iconProps: { iconName: "Add" }, onClick: addOpcode }, 
     ];
 
     return <Blade title="Opcode" buttons={buttons}>
