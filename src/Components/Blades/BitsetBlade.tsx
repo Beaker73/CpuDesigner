@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { uuid } from "../../Types/uuid";
-import { Stack, TextField, Text, Slider, ICommandBarItemProps, getTheme, DetailsList, IColumn, Selection, CommandBar, mergeStyleSets, SelectionMode, IContextualMenuItemProps, IContextualMenuItem } from "@fluentui/react";
+import { uuid, newUuid } from "../../Types/uuid";
+import { Stack, TextField, Text, Slider, ICommandBarItemProps, getTheme, DetailsList, IColumn, Selection, CommandBar, mergeStyleSets, SelectionMode, IContextualMenuItemProps, IContextualMenuItem, ContextualMenuItemType, replaceElement } from "@fluentui/react";
 
 import { Blade, useBlade } from "./Host";
 import { Field } from "../Field";
@@ -22,12 +22,14 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
     const style = useMemo(useStyle, [theme]);
 
     const bitSet = useStoreState(store => store.bitsets.bitSetsById[props.id]);
-    const { setName, setBitCount, generateSet, deleteBitset } = useStoreActions(store => store.bitsets);
+    const { setName, setBitCount, generateSet, deleteBitset, cloneBitset } = useStoreActions(store => store.bitsets);
 
     const buttons: ICommandBarItemProps[] = [
         { key: "generate", text: "Generate", iconProps: { iconName: "NumberedList" }, onClick: requestGenerate },
     ];
     const menuItems: IContextualMenuItem[] = [
+        { key: "clone", text: "Clone Bitset", iconProps: { iconName: "Copy" }, onClick: clone },
+        { key: "line1", itemType: ContextualMenuItemType.Divider },
         { key: "delete", text: "Delete Bitset", iconProps: { iconName: "Delete", style: { color: theme.semanticColors.severeWarningIcon } }, onClick: requestDelete },
     ];
 
@@ -122,6 +124,13 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
         function executeGenerate() {
             generateSet({ id: props.id });
         }
+    }
+
+    /** Clones this bitset */
+    function clone() {
+        const newId = newUuid();
+        cloneBitset({ bitsetToCloneId: bitSet.id, newId });
+        blade.replaceBlade(BitsetBlade, { id: newId });
     }
 
     function useStyle() {

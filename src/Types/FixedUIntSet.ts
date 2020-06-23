@@ -95,6 +95,10 @@ export class FixedUIntMap<T> {
     /** Count of numbers in the set */
     public get size(): number { return this._map.size; }
 
+    public clone(): FixedUIntMap<T> {
+        return new FixedUIntMap<T>(this.bitCount, this.nakedItems());
+    }
+
     *[Symbol.iterator](): Generator<FixedUInt> {
         return this.values();
     }
@@ -104,6 +108,12 @@ export class FixedUIntMap<T> {
         const bitCount = this._bitCount;
         for (const item of this._map) {
             yield [new FixedUInt(bitCount, item[0]), item[1]];
+        }
+    }
+
+    private *nakedItems(): Generator<[bigint, T]> {
+        for (const item of this._map) {
+            yield item;
         }
     }
 

@@ -52,6 +52,18 @@ export const bitsetsStore: BitsetsStoreModel = {
             bitset.values.delete(payload.value);
         }
     }),
+    cloneBitset: action((state, payload) => {
+        const bitset = state.bitSetsById[payload.bitsetToCloneId];
+        if(bitset && bitset.values) {
+            const newBitset: Bitset = {
+                ...bitset,
+                id: payload.newId,
+                name: `${bitset.name} (copy)`,
+                values: bitset.values?.clone(),
+            }
+            state.bitSetsById[payload.newId] = newBitset;
+        }
+    }),
     generateSet: action((state, payload) => {
         const bitSet = state.bitSetsById[payload.id];
         if (bitSet) {

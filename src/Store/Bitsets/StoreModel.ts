@@ -26,6 +26,8 @@ export interface BitsetsStoreModel extends BitsetsStoreState {
     addBitset: Action<BitsetsStoreModel, Bitset>;
     /** Deletes the bitset with id */
     deleteBitset: Action<BitsetsStoreModel, { id: uuid }>;
+    /** Clones a bitset to a newbitset with the provided id */
+    cloneBitset: Action<BitsetsStoreModel, { bitsetToCloneId: uuid, newId: uuid }>;
     /** Creates a new bitset */
     newBitset: Thunk<BitsetsStoreModel, NewBitsetPayload, void, StoreModel, Bitset>;
     /** Generate a full set of entries for the bitset */
