@@ -3,7 +3,7 @@ import { uuid, newUuid } from "../../../Types/uuid";
 
 export interface Instruction {
     id: uuid;
-    bitSets: HasValues[];
+    bitSets: (HasValues | uuid)[];
     mnemonic: string;
     description: string;
 }

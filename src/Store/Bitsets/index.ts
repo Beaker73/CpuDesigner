@@ -5,6 +5,7 @@ import { maxValueForBitCount } from "../../Types/FixedUInt";
 import { FixedUIntMap } from "../../Types/FixedUIntSet";
 
 export * from "./StoreModel";
+export * from "./Models";
 
 export const bitsetsStore: BitsetsStoreModel = {
     bitSetsById: {},

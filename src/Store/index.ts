@@ -2,7 +2,7 @@ import { createStore, createTypedHooks, createTransform, persist } from "easy-pe
 
 import { architectureStore } from "./Architecture";
 import { bitsetsStore, deserializeBitsetsState } from "./Bitsets";
-import { instructionsStore } from "./Instructions";
+import { instructionsStore, deserializeInstructionState } from "./Instructions";
 import { StoreModel } from "./StoreModel";
 
 export * from "./Architecture";
@@ -23,6 +23,10 @@ const transformer = createTransform(
         switch(key) {
             case "bitsets":
                 data = deserializeBitsetsState(data);
+                break;
+            case "instructions":
+                debugger;
+                data = deserializeInstructionState(data);
                 break;
         }
         return data;
