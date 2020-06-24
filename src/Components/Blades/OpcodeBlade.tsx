@@ -35,10 +35,9 @@ export function OpcodeBlade(props: OpcodeBladeProps): JSX.Element {
         },
     ];
 
-
-    const bits: JSX.Element[] = [];
+    const lines: JSX.Element[] = [];
+    let bits: JSX.Element[] = [];
     // process all sets
-    let cnt = 0;
     let b = "";
     for (const set of instr.bitSets) {
         if (typeof set !== "string") {
@@ -52,26 +51,31 @@ export function OpcodeBlade(props: OpcodeBladeProps): JSX.Element {
                     c = '•';
                 const bitBack: CSSProperties = {
                     background: c == '0' ? theme.semanticColors.disabledBackground
-                              : c == '1' ? theme.semanticColors.bodyBackground
-                                         : theme.palette.themeLighter,
-                    color     : c == '0' ? theme.semanticColors.disabledText
-                              : c == '1' ? theme.semanticColors.bodyText
-                                         : theme.semanticColors.bodyText,
-                    borderColor:c != '0' && c != '1' ? theme.palette.themeTertiary : undefined,
+                        : c == '1' ? theme.semanticColors.bodyBackground
+                            : theme.palette.themeLighter,
+                    color: c == '0' ? theme.semanticColors.disabledText
+                        : c == '1' ? theme.semanticColors.bodyText
+                            : theme.semanticColors.bodyText,
+                    borderColor: c != '0' && c != '1' ? theme.palette.themeTertiary : undefined,
                 };
                 b += c;
                 bits.push(<Stack className={style.bit} style={bitBack} horizontal horizontalAlign="center" verticalAlign="baseline">
                     {c}
                 </Stack>);
-                cnt++;
-                if (cnt % bitCount == 0) {
-                    const v = parseInt(b.replace(/•/g, '0'), 2).toString(16);
-                    console.log({b, r: b.replace(/•/g, '0'), v});
-                    bits.push(<Stack className={style.value} horizontal verticalAlign="baseline">0x{v}</Stack>)
-                    bits.push(<br />);
-                    b = "";
-                }
+                lineEnd();
             }
+        }
+    }
+    if (bits.length > 0)
+        lineEnd();
+
+    function lineEnd() {
+        if (bits.length >= bitCount) {
+            const v = parseInt(b.replace(/•/g, '0'), 2).toString(16);
+            bits.push(<Stack className={style.value} horizontal verticalAlign="baseline">0x{v}</Stack>)
+            lines.push(<Stack horizontal className={style.bitContainer} tokens={{ childrenGap: theme.spacing.s2 }}>{bits}</Stack>);
+            bits = [];
+            b = "";
         }
     }
 
@@ -85,8 +89,8 @@ export function OpcodeBlade(props: OpcodeBladeProps): JSX.Element {
             </Field>
             <Field label="Bits" subLabel="comprising the instruction">
                 <CommandBar items={editButtons} />
-                <Stack horizontal className={style.bitContainer} tokens={{ childrenGap: theme.spacing.s2 }}>
-                    {bits}
+                <Stack tokens={{ childrenGap: theme.spacing.s2 }}>
+                    {lines}
                 </Stack>
             </Field>
         </Stack>
@@ -120,6 +124,11 @@ export function OpcodeBlade(props: OpcodeBladeProps): JSX.Element {
             value: {
                 width: 24, height: 24,
                 border: `solid 1px transparent`,
+                flexGrow: 1,
+            },
+            break: {
+                flexBasis: '100%',
+                height: 0,
             }
         })
     }
