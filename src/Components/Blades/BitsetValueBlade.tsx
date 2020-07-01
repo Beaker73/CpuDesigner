@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Blade, useBlade } from "./Host";
+import { Blade, useBlade } from "@beaker73/fluentui-blades";
 import { uuid } from "../../Types/uuid";
 import { FixedUInt } from "../../Types/FixedUInt";
 import { useStoreState, useStoreActions } from "../../Store";

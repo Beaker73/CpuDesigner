@@ -2,7 +2,7 @@ import * as React from "react";
 import { DetailsList, IColumn, ICommandBarItemProps, SelectionMode } from "@fluentui/react";
 
 import { OpcodeBlade } from "./OpcodeBlade";
-import { Blade, useBlade } from "./Host";
+import { Blade, useBlade } from "@beaker73/fluentui-blades";
 import { newUuid } from "../../Types";
 import { useStoreActions, useStoreState, Instruction } from "../../Store";
 

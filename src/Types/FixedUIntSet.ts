@@ -25,7 +25,6 @@ export class FixedUIntMap<T> {
     }
 
     public has(value: FixedUInt | bigint) {
-        debugger;
         if (value instanceof FixedUInt) {
             if (value.bitCount > this._bitCount)
                 throw new Error(`bitCount $(value.bitCount) of value out of range ($this._bitCount)`);

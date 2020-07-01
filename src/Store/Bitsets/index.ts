@@ -1,3 +1,5 @@
+import wu from "wu";
+
 import { BitsetsStoreModel } from "./StoreModel";
 import { action, computed, thunk } from "easy-peasy";
 import { Bitset, BitsetValueTag } from "./Models/Bitset";
@@ -9,6 +11,22 @@ export * from "./Models";
 
 export const bitsetsStore: BitsetsStoreModel = {
     bitSetsById: {},
+    isBitsetInUse: computed(
+        [
+            state => state.bitSetsById,
+            (state, store) => store.instructions.all
+        ],
+        (sets, instrs) => id => {
+            const set = sets[id];
+            if(set) {
+                return wu.values(instrs).some(i => 
+                    i.bitSets.some(bs => typeof bs === "string" && bs === id));
+            }
+
+            return false;
+        }
+    ),
+
     getBitsetById: computed(state => id => state.bitSetsById[id]),
 
     setBitCount: action((state, payload) => {
@@ -72,7 +90,6 @@ export const bitsetsStore: BitsetsStoreModel = {
                 bitSet.values = new FixedUIntMap<BitsetValueTag>(bitSet.bitCount);
             const maxValue = maxValueForBitCount(bitSet.bitCount);
             for (let i = 0n; i <= maxValue; i++) {
-                debugger;
                 if (!bitSet.values.has(i)) {
                     bitSet.values.add(i, {name: i.toString()});
                 }

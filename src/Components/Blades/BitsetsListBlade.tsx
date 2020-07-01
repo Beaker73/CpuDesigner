@@ -1,7 +1,7 @@
 import * as React from "react";
 import { DetailsList, IColumn, ICommandBarItemProps, SelectionMode } from "@fluentui/react";
 
-import { Blade, useBlade } from "./Host";
+import { Blade, useBlade } from "@beaker73/fluentui-blades";
 import { BitsetBlade } from "./BitsetBlade";
 import { useStoreActions, useStoreState } from "../../Store";
 import { newUuid } from "../../Types/uuid";

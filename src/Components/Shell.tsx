@@ -1,12 +1,12 @@
 import React, { useMemo } from "react";
 import { StoreProvider } from "easy-peasy";
 import { Fabric, mergeStyleSets, getTheme } from "@fluentui/react";
+import { BladeHost } from "@beaker73/fluentui-blades";
 
 // store
 import { store } from "../Store";
 
 // components
-import { BladeHost } from "./Blades/Host";
 import { ArchitectureBlade } from "./Blades/ArchitectureBlade";
 
 export function Shell(): JSX.Element {

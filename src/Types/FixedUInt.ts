@@ -127,8 +127,6 @@ export function maxValueForBitCount(bitCount: number): bigint {
 
 export function fromBase36(value: string): bigint {
 
-    console.log({m: 'fromBase36', value});
-
     // https://stackoverflow.com/questions/55646698/base-36-to-bigint
     const radix = 36;
 

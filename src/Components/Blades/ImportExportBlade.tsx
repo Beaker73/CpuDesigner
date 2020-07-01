@@ -2,7 +2,7 @@ import React, { useMemo, useRef } from "react";
 import { saveAs } from "file-saver";
 import { DefaultButton, Stack, getTheme, mergeStyleSets } from "@fluentui/react";
 
-import { Blade } from "./Host";
+import { Blade } from "@beaker73/fluentui-blades";
 import { Field } from "../Field";
 import { useStoreState } from "../../Store";
 import { FileButton } from "../FileButton";

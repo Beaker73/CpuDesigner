@@ -15,6 +15,10 @@ export interface BitsetsStoreState {
 }
 
 export interface BitsetsStoreModel extends BitsetsStoreState {
+
+    /** Gets if the bitset is in use by any of the instructions */
+    isBitsetInUse: Computed<BitsetsStoreModel, (id: uuid) => boolean, StoreModel>;
+
     /** Set name on bitset */
     setName: Action<BitsetsStoreModel, { id: uuid, name: string }>;
     /** Set bitcount on bitset */

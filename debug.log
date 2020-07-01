@@ -1,2 +1,4 @@
 [0614/202137.744:WARNING:minidump_to_upload_parameters.cc(36)] duplicate key guid, discarding value c034548e-3270-486e-b292-1fa2330462a4
 [0614/202545.304:WARNING:minidump_to_upload_parameters.cc(36)] duplicate key guid, discarding value c034548e-3270-486e-b292-1fa2330462a4
+[0625/154641.340:ERROR:file_io.cc(89)] ReadExactly: expected 36, observed 0
+[0625/191334.108:ERROR:file_io.cc(89)] ReadExactly: expected 36, observed 0

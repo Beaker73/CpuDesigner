@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { uuid, newUuid } from "../../Types/uuid";
 import { Stack, TextField, Text, Slider, ICommandBarItemProps, getTheme, DetailsList, IColumn, Selection, CommandBar, mergeStyleSets, SelectionMode, IContextualMenuItemProps, IContextualMenuItem, ContextualMenuItemType, replaceElement } from "@fluentui/react";
 
-import { Blade, useBlade } from "./Host";
+import { Blade, useBlade } from "@beaker73/fluentui-blades";
 import { Field } from "../Field";
 import { BitsetValueBlade } from "./BitsetValueBlade";
 
@@ -22,6 +22,9 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
     const style = useMemo(useStyle, [theme]);
 
     const bitSet = useStoreState(store => store.bitsets.bitSetsById[props.id]);
+    const isInUse = useStoreState(store => {
+        return store.bitsets.isBitsetInUse(props.id)
+    });
     const { setName, setBitCount, generateSet, deleteBitset, cloneBitset } = useStoreActions(store => store.bitsets);
 
     const buttons: ICommandBarItemProps[] = [
@@ -87,15 +90,24 @@ export function BitsetBlade(props: BitsetBladeProps): JSX.Element {
 
     function requestDelete() {
 
-        blade.showDialog({
-            title: "Delete Bitset",
-            variant: "SevereWarning",
-            message: `Are you sure you want to delete the bitset ${bitSet?.name}?`,
-            buttons: [
-                { text: "Delete", onClick: executeDelete },
-                { text: "Cancel" }
-            ]
-        });
+        if (isInUse)
+            blade.showDialog({
+                title: "Bitset in use",
+                message: "This bitset is in use by one or more instructions. Therefore it cannot be deleted at this time.",
+                buttons: [
+                    { text: "Understood" }
+                ]
+            })
+        else
+            blade.showDialog({
+                title: "Delete Bitset",
+                variant: "SevereWarning",
+                message: `Are you sure you want to delete the bitset ${bitSet?.name}?`,
+                buttons: [
+                    { text: "Delete", onClick: executeDelete },
+                    { text: "Cancel" }
+                ]
+            });
 
         function executeDelete() {
             deleteBitset({ id: bitSet.id });

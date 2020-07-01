@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Label, Slider, TextField, Button, Stack, getTheme, ICommandBarItemProps } from "@fluentui/react";
 
-import { Blade, useBlade } from "./Host";
+import { Blade, useBlade } from "@beaker73/fluentui-blades";
 import { BitsetsListBlade } from "./BitsetsListBlade";
 import { OpcodesListBlade } from "./OpcodesListBlade";
 import { ImportExportBlade } from "./ImportExportBlade";

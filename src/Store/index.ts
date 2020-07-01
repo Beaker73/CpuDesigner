@@ -25,7 +25,6 @@ const transformer = createTransform(
                 data = deserializeBitsetsState(data);
                 break;
             case "instructions":
-                debugger;
                 data = deserializeInstructionState(data);
                 break;
         }
@@ -37,7 +36,7 @@ export const store = createStore(persist(rootStore, {
     storage: "localStorage",
     transformers: [
         transformer,
-    ],
+    ]
 }));
 
 const typedHooks = createTypedHooks<StoreModel>();

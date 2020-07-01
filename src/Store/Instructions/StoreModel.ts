@@ -22,12 +22,10 @@ export function deserializeInstructionState(state: InstructionsStoreState): Inst
                 ...v,
                 bitSets: v.bitSets.map(bs => {
                     if(typeof bs === "string") {
-                        console.log({type: 'string', bs});
                         return bs;
                     }
                     if(typeof bs === "object") {
                         const v = FixedUInt.parse(bs.bitCount, (bs as any).value)
-                        console.log({type: 'object', bs, v});
                         return v;
                     }
                     throw new Error("invalid state");
